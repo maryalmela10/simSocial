@@ -2,10 +2,9 @@
 CREATE DATABASE red_social;
 USE red_social;
 
--- Tabla de usuarios
+-- Tabla de usuarios (modificada)
 CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario VARCHAR(50) NOT NULL UNIQUE,
     clave VARCHAR(255) NOT NULL,
     rol VARCHAR(50) DEFAULT 'ROLE_USER',
     nombre VARCHAR(100) NOT NULL,
@@ -53,3 +52,11 @@ CREATE TABLE fotos_perfil (
     fecha_subida TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
+
+-- Insertar un usuario regular
+INSERT INTO usuarios (clave, nombre, apellido, email)
+VALUES ('1234', 'pablo', 'pozo', 'pablo@email.com');
+
+-- Insertar un usuario administrador
+INSERT INTO usuarios (clave, rol, nombre, apellido, email)
+VALUES ('1234', 'ROLE_ADMIN', 'mary', 'almela', 'mary@email.com');

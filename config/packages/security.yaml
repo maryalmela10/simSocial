@@ -2,8 +2,8 @@ security:
     providers:
         pedidos:
             entity:
-                class: App\Entity\Restaurante
-                property: correo
+                class: App\Entity\Usuario
+                property: email
     password_hashers:
         App\Entity\Restaurante:
             algorithm: plaintext
