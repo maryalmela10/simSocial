@@ -3,14 +3,14 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Aplicación de pedidos</title>
+        <title>Login</title>
     </head>
     <body>	
     	<form action="{{ path('ctrl_login') }}" method="post">
 			Usuario
-			<input type="text" id="username" name="_username" />
+			<input type="text" id="username" name="_username" required/>
 			Clave
-			<input type="password" id="password" name="_password" />
+			<input type="password" id="password" name="_password" required/>
 			<button type="submit">login</button>
 		</form>
     </body>

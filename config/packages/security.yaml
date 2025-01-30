@@ -1,11 +1,11 @@
 security:
     providers:
-        pedidos:
+        usuarios:
             entity:
                 class: App\Entity\Usuario
                 property: email
     password_hashers:
-        App\Entity\Restaurante:
+        App\Entity\Usuario:
             algorithm: plaintext
     firewalls:
         dev:
@@ -13,11 +13,11 @@ security:
             security: false
         main:
             lazy: true
-            provider: pedidos
+            provider: usuarios
             form_login:
                 login_path: ctrl_login
                 check_path: ctrl_login
-                default_target_path: categorias
+                default_target_path: inicio
             logout:
                 path:   ctrl_logout
                 target: ctrl_login    

@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class PedidosLogin extends AbstractController
+class Login extends AbstractController
 {
 	#[Route('/login', name:'ctrl_login')]
     public function login(){    
