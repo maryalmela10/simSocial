@@ -1,3 +1,28 @@
-Usuario: {{ app.user.nombre }}
-<a href="{{ path('inicio') }}">Inicio</a>
-<a href="{{ path('ctrl_logout') }}">Cerrar sesión</a>
+{# templates/base.html.twig #}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}SimSocial{% endblock %}</title>
+        <link href="{{ asset('css/stylesheetCabecera.css') }}" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+	<header class="header-social">
+    <div class="user-section">
+        <div class="user-avatar">
+            {{ app.user.nombre|first|upper }}
+        </div>
+        <span>¡Hola, {{ app.user.nombre }}!</span>
+    </div>
+
+    <nav class="nav-links">
+        <a href="{{ path('inicio') }}" class="nav-link">
+            🏠 Inicio
+        </a>
+        <a href="{{ path('ctrl_logout') }}" class="nav-link">
+            🚪 Cerrar sesión
+        </a>
+    </nav>
+</header>
+    </body>
+</html>
