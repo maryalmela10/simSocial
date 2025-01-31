@@ -18,8 +18,8 @@
         {% for post in posts %}
             <div class="post">
                 <p>{{ post.contenido }}</p>
-                <small>{{ post.fecha|date('d/m/Y H:i') }} - {{ post.comentarios|length }} comentarios</small>
-                <a href="{{ path('post', {'id': post.id}) }}">Ver post</a>
+                <small>{{ post.fecha_publicacion|date('d/m/Y H:i') }} </small>
+                {# <a href="{{ path('post', {'id': post.id}) }}">Ver post</a> #}
             </div>
         {% endfor %}
     </div>
