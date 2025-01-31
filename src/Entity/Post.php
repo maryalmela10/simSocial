@@ -1,4 +1,5 @@
 <?php
+namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 #[ORM\Table(name: "posts")]
@@ -13,7 +14,7 @@ class Post
     private string $contenido;
 
     #[ORM\Column(type:'datetime', name:'fecha_publicacion')]
-    private $fechaPublicacion;
+    private $fecha_publicacion;
 
     #[ORM\ManyToOne(targetEntity: 'Usuario', inversedBy: "posts")]
 

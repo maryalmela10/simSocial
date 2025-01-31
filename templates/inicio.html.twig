@@ -2,6 +2,6 @@
 {% block title %}Inicio{% endblock %}
 {% block contenido %}
     <p>Entraste!!!</p>
-    <a href="" >Ver mi perfil</a>
+    <a href="{{ path('verPost',{'id_usuario': app.user.id}) }}">{{app.user.id}}</a>
     <a href="" >perfil de pablo</a>
 {% endblock %}

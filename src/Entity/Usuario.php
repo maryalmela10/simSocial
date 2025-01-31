@@ -34,7 +34,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 	#[ORM\Column(type:'integer', name:'rol')]
     private $rol;
 
-    #[ORM\OneToMany(targetEntity:'Posts', mappedBy:'usuarios')]
+    #[ORM\OneToMany(targetEntity:'Post', mappedBy:'usuario')]
 	private $posts;
 
     public function __construct() {

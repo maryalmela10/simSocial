@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Usuario;
+use App\Entity\Post;
 use App\Entity\Producto;
 use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
@@ -25,6 +26,14 @@ class PedidosBase extends AbstractController
         // $categorias = $entityManager->getRepository(Categoria::class)->findAll();
         // return $this->render("categorias.html.twig", ['categorias'=>$categorias]);
         return $this->render("inicio.html.twig");
+    }
+
+    #[Route('/verPost/{id_usuario}', name:'verPost')]
+    public function verPost(EntityManagerInterface $entityManager, $id_usuario) {
+        $posts = $entityManager->getRepository(Usuario::class)->find($id_usuario)->getPosts();
+        // $categorias = $entityManager->getRepository(Categoria::class)->findAll();
+        // return $this->render("categorias.html.twig", ['categorias'=>$categorias]);
+        return $this->render("perfil.html.twig",['posts'=>$posts]);
     }
 
 	// #[Route('/productos/{id}', name:'productos')]

@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Perfil de {{ app.user.nombre }}{% endblock %}
+
+{% block contenido %}
+    <h1>Perfil de {{ app.user.nombre }}</h1>
+
+        {# <div class="new-post-form">
+            <h2>Crear nuevo post</h2>
+            {{ form_start(form) }}
+                {{ form_row(form.contenido) }}
+                <button type="submit">Publicar</button>
+            {{ form_end(form) }}
+        </div> #}
+
+    <div class="user-posts">
+        <h2>Posts de {{ app.user.nombre }}</h2>
+        {% for post in posts %}
+            <div class="post">
+                <p>{{ post.contenido }}</p>
+                <small>{{ post.fecha|date('d/m/Y H:i') }} - {{ post.comentarios|length }} comentarios</small>
+                <a href="{{ path('post', {'id': post.id}) }}">Ver post</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
