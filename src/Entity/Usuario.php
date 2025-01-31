@@ -4,6 +4,8 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+
 
 #[ORM\Entity]
 #[ORM\Table(name: "usuarios")]
@@ -31,6 +33,17 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 
 	#[ORM\Column(type:'integer', name:'rol')]
     private $rol;
+
+    #[ORM\OneToMany(targetEntity:'Posts', mappedBy:'usuarios')]
+	private $posts;
+
+    public function __construct() {
+        $this->posts = new ArrayCollection();
+    }
+    
+    public function getPosts() {
+        return $this->posts;    
+    }
 
     public function getRol(){
         return $this->rol;

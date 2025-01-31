@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\Categoria;
+use App\Entity\Usuario;
 use App\Entity\Producto;
 use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
