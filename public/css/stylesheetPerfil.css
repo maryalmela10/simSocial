@@ -1,16 +1,17 @@
-/* perfil propio */
 .profile-container {
     max-width: 800px;
-    margin: 20px auto;
-    background-color: white;
-    border-radius: 10px;
+    margin: 0 auto;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .profile-info {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
 }
 
 .profile-avatar {
@@ -18,40 +19,127 @@
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info h3 {
+    font-size: 28px;
+    color: #333;
+    margin: 10px 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info p {
+    font-size: 16px;
+    color: #777;
+    margin: 5px 0;
 }
 
 .new-post-form {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    text-align: center;
 }
 
 .new-post-form textarea {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    padding: 15px;
+    border: 2px solid #1a3a63;
+    border-radius: 8px;
     resize: vertical;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.new-post-form textarea:focus {
+    outline: none;
+    border-color: #99e7ff;
+    box-shadow: 0 0 10px rgba(153, 231, 255, 0.5);
 }
 
 .new-post-form button {
     background-color: #99e7ff;
-    color: white;
+    color: #333;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    padding: 8px 15px;
+    border-radius: 20px;
     cursor: pointer;
-    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.new-post-form button:hover {
+    background-color: #dea1ff;
+    color: white;
 }
 
 .posts-list .post {
-    background-color: #f9f9f9;
-    border-radius: 5px;
+    background-color: white;
+    border-radius: 8px;
     padding: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 2px solid #1a3a63;
+}
+
+.posts-list .post:hover {
+    transform: translateY(-5px);
+}
+
+.posts-list .post p {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 10px;
 }
 
 .posts-list .post small {
     color: #777;
     display: block;
-    margin-top: 5px;
+    margin-bottom: 10px;
+    font-size: 12px;
+}
+
+.posts-list .post a {
+    display: inline-block;
+    background-color: #99e7ff;
+    color: #333;
+    padding: 8px 15px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.posts-list .post a:hover {
+    background-color: #dea1ff;
+    color: white;
+}
+
+@media (max-width: 600px) {
+    .profile-container {
+        padding: 10px;
+    }
+
+    .posts-list .post {
+        padding: 10px;
+    }
+}
+.profile-info h3 {
+    font-size: 32px;
+    color: #99e7ff;
+    /* Un azul más vibrante para el nombre */
+    margin: 10px 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.profile-container h2 {
+    color: #ffac4c;
+    /* Un tono coral para "Mi Perfil" */
+    
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }

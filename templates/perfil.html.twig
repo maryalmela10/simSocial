@@ -7,21 +7,22 @@
 {% endblock %}
 
 {% block contenido %}
-   <div class="profile-container">
-    <h2>Mi Perfil</h2>
-    
+<div class="profile-container">
+ <h2>Mi Perfil</h2>
     <div class="profile-info">
         {# <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="profile-avatar"> #}
-        <h3>{{ app.user.nombre ~ ' ' ~ app.user.apellido }}</h3>
+        <h3>{{ app.user.nombre }} {{ app.user.apellido }}</h3>
         <p>Email: {{ app.user.email }}</p>
         <p>Registrado: {{ app.user.fecha_registro|date("d/m/Y") }}</p>
     </div>
+    
+   
 
-        <!-- Formulario para crear nuevo post (solo visible en el perfil propio) -->
-        <form method="POST" action="" class="new-post-form">
-            <textarea name="contenido" placeholder="¿Qué estás pensando?"></textarea>
-            <button type="submit">Publicar</button>
-        </form>
+    <!-- Formulario para crear nuevo post (solo visible en el perfil propio) -->
+    <form method="POST" action="" class="new-post-form">
+        <textarea name="contenido" placeholder="¿Qué estás pensando?"></textarea>
+        <button type="submit">Publicar</button>
+    </form>
 
     <!-- Lista de posts propios -->
     <div class="posts-list">
@@ -29,16 +30,12 @@
         <div class="post">
             <p>{{ post.contenido }}</p>
             <small>
-                Publicado el {{ post.fecha_publicacion|date("d/m/Y") }} a las {{ post.fecha_publicacion|date("H:i") }}
+                Publicado el {{ post.fecha_publicacion|date("d/m/Y") }} a las {{ post.fecha_publicacion|date("H:i") }} - Comentarios: {{ post.comentarios|length }}
             </small>
             <br>
-            <a href="{{ path('ver_post', { id: post.id }) }}">Ver más</a> {# Enlace al detalle del post #}
-            <p>{{ post.comentariosCount }} comentarios</p> {# Muestra la cantidad de comentarios #}
-
+            <a href="{{ path('ver_post', { id: post.id }) }}">Ver más</a>
         </div>
         {% endfor %}
     </div>
-
-
 </div>
 {% endblock %}
