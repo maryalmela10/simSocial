@@ -1,49 +1,62 @@
 .container {
     display: flex;
-    justify-content: space-between;
-}
-
-.main-content {
-    flex: 2;
+    justify-content: flex-end;
+    max-width: 100%;
+    margin: 0;
+    padding: 20px;
 }
 
 .sidebar {
-    flex: 1;
+    width: 300px;
     background: linear-gradient(90deg, #99e7ff 0%, #dea1ff 100%);
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.usuarios-header {
+    font-size: 1.8em;
+    color: #333;
+    padding: 10px 0;
+    display: inline-block;
+    border-bottom: 2px solid #dea1ff;
 }
 
 .usuarios-container {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-.usuarios-container li {
-    margin: 10px 0;
-    background-color: #ffffff;
-    padding: 10px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
+.usuario-item {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    transition: all 0.3s ease;
 }
 
-.usuarios-container li:hover {
-    background-color: #f7f7f7;
+.usuario-item:hover {
+    background-color: rgba(255, 255, 255, 1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.usuarios-container a {
+.usuario-item a {
+    display: block;
+    padding: 12px 15px;
     text-decoration: none;
     color: #1a73e8;
-    /* Azul más vibrante */
     font-weight: bold;
     transition: color 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.usuarios-container a:hover {
+.usuario-item a:hover {
     color: #0c47a1;
-    /* Azul más oscuro al pasar el ratón */
-    text-decoration: underline;
 }
