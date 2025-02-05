@@ -2,16 +2,20 @@
     <link href="{{ asset('css/stylesheetUsuarios.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block contenido %}
-<div class="usuarios-container">
-    <h3>Lista de Usuarios</h3>
-    <ul>
-        {% for usuario in usuarios %}
-            <li>
-                <a href="{{ path('ver_perfil', { 'id': usuario.id }) }}">
-                    {{ usuario.nombre }} {{ usuario.apellido }}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
+<div class="container">
+    <div class="sidebar">
+        <div class="header-container">
+            <h3 class="usuarios-header">Usuarios</h3>
+        </div>
+        <div class="usuarios-container">
+            {% for usuario in usuarios %}
+                <div class="usuario-item">
+                    <a href="{{ path('ver_perfil', { 'id': usuario.id }) }}">
+                        {{ usuario.nombre|capitalize }} {{ usuario.apellido|capitalize }}
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 {% endblock %}

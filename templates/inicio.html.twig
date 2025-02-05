@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 {% block title %}Inicio{% endblock %}
 {% block stylesheets %}
+ {{ parent() }}
+<link href="{{ asset('css/stylesheetInicio.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 {% block contenido %}
 <div class="container">
@@ -8,9 +10,6 @@
         <h3>Bienvenido a la Red Social</h3>
         <a href="{{ path('miPerfil',{'id_usuario': app.user.id}) }}">Mi perfil</a>
     </div>
-    <div class="sidebar">
-        {# Incluimos la plantilla de usuarios directamente #}
         {% include 'usuarios.html.twig' %}
-    </div>
 </div>
 {% endblock %}
