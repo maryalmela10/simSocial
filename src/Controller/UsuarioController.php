@@ -16,6 +16,16 @@ class UsuarioController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
+    #[Route('/inicio', name: 'inicio')]
+    public function inicio(): Response
+    {
+        $usuarios = $this->entityManager->getRepository(Usuario::class)->findAll();
+
+        return $this->render('inicio.html.twig', [
+            'usuarios' => $usuarios,
+        ]);
+    }
+
     #[Route('/usuarios', name: 'listar_usuarios')]
     public function listarUsuarios(): Response
     {
