@@ -23,8 +23,6 @@ class UsuarioController extends AbstractController
     public function inicio(): Response
     {
         $usuarioActual = $this->getUser();
-        $usuarios = $this->entityManager->getRepository(Usuario::class)->findAll();
-
         $todosUsuarios = $this->entityManager->getRepository(Usuario::class)->findAll();
     
     $usuarios = array_filter($todosUsuarios, function($usuario) use ($usuarioActual) {
@@ -54,6 +52,13 @@ class UsuarioController extends AbstractController
     #[Route('/usuario/{id}', name: 'ver_perfil')]
     public function verPerfil(EntityManagerInterface $entityManager, int $id) 
     {
+         $usuarioActual = $this->getUser();
+
+         if ($usuarioActual instanceof Usuario && $usuarioActual->getId() == $id) {
+            // Redirige al controlador miPerfil
+            return $this->redirectToRoute('miPerfil', ['id_usuario' => $id]);
+        }
+
          $usuario = $entityManager->getRepository(Usuario::class)->find($id);
          
          if (!$usuario) {

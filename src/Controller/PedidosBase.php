@@ -43,7 +43,7 @@ class PedidosBase extends AbstractController
         }
 
         // Verificar si el id_usuario coincide con el usuario autenticado
-        if ($usuarioActual->getId() != $id_usuario) {
+        if ($usuarioActual instanceof Usuario && $usuarioActual->getId() != $id_usuario) {
             // Si no coincide, redirigir al inicio
             return new RedirectResponse($this->generateUrl('inicio'));
         }
