@@ -1,6 +1,8 @@
 <?php
 namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
 #[ORM\Entity]
 #[ORM\Table(name: "posts")]
 class Post
@@ -17,9 +19,19 @@ class Post
     private $fecha_publicacion;
 
     #[ORM\ManyToOne(targetEntity: 'Usuario', inversedBy: "posts")]
-
     #[ORM\JoinColumn(name:'usuario_id', referencedColumnName:'id')]
     private $usuario;
+
+    #[ORM\OneToMany(targetEntity: 'Comentario', mappedBy: 'post')]
+    private $comentarios;
+
+    public function __construct(){
+        $this->comentarios = new ArrayCollection();
+    }
+
+    public function getComentarios(){
+        return $this->comentarios;
+    }
 
     public function getId()
     {

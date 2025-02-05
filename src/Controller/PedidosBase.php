@@ -8,7 +8,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Usuario;
 use App\Entity\Post;
-use App\Entity\Producto;
+use App\Entity\Comentario;
 use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
 use Symfony\Component\Mailer\MailerInterface;
