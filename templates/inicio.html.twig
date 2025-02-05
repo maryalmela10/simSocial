@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 {% block title %}Inicio{% endblock %}
+{% block stylesheets %}
+{% endblock %}
 {% block contenido %}
 <div class="container">
     <div class="main-content">
         <h3>Bienvenido a la Red Social</h3>
-        <a href="{{ path('verPost',{'id_usuario': app.user.id}) }}">{{app.user.id}}</a>
-        <a href="" >perfil de pablo</a><br>
-        
+        <a href="{{ path('miPerfil',{'id_usuario': app.user.id}) }}">Mi perfil</a>
     </div>
     <div class="sidebar">
         {# Incluimos la plantilla de usuarios directamente #}

@@ -1,36 +1,6 @@
-
-{% block styles %}
-<style>
-    .container {
-        display: flex;
-        justify-content: space-between;
-    }
-    .main-content {
-        flex: 2;
-    }
-    .sidebar {
-        flex: 1;
-        background-color: #f9f9f9;
-        padding: 20px;
-        border-radius: 5px;
-    }
-    .usuarios-container {
-        list-style-type: none;
-        padding: 0;
-    }
-    .usuarios-container li {
-        margin: 10px 0;
-    }
-    .usuarios-container a {
-        text-decoration: none;
-        color: #007bff;
-    }
-    .usuarios-container a:hover {
-        text-decoration: underline;
-    }
-</style>
+{% block stylesheets %}
+    <link href="{{ asset('css/stylesheetUsuarios.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
-
 {% block contenido %}
 <div class="usuarios-container">
     <h3>Lista de Usuarios</h3>
