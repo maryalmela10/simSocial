@@ -29,15 +29,6 @@ class PedidosBase extends AbstractController
         // return $this->render("categorias.html.twig", ['categorias'=>$categorias]);
         return $this->render("inicio.html.twig");
     }
-    
-
-    // #[Route('/verPost/{id_usuario}', name:'verPost')]
-    // public function verPost(EntityManagerInterface $entityManager, $id_usuario) {
-    //     $posts = $entityManager->getRepository(Usuario::class)->find($id_usuario)->getPosts();
-    //     // $categorias = $entityManager->getRepository(Categoria::class)->findAll();
-    //     // return $this->render("categorias.html.twig", ['categorias'=>$categorias]);
-    //     return $this->render("perfil.html.twig",['posts'=>$posts]);
-    // }
 
     #[Route('/miPerfil/{id_usuario}', name:'miPerfil')]
     public function miPerfil(EntityManagerInterface $entityManager, Security $security, $id_usuario)
@@ -64,6 +55,10 @@ class PedidosBase extends AbstractController
         }
 
         $posts = $usuario->getPosts();
+        // Añadir cantidad de comentarios a cada post
+        foreach ($posts as $post) {
+        $post->comentariosCount = count($post->getComentarios());
+        }
 
         return $this->render("perfil.html.twig", [
             'posts' => $posts,
