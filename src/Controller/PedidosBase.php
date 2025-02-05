@@ -17,6 +17,7 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Core\Security;
 
 #[IsGranted('ROLE_USER')]
 class PedidosBase extends AbstractController
@@ -35,6 +36,22 @@ class PedidosBase extends AbstractController
         // $categorias = $entityManager->getRepository(Categoria::class)->findAll();
         // return $this->render("categorias.html.twig", ['categorias'=>$categorias]);
         return $this->render("perfil.html.twig",['posts'=>$posts]);
+    }
+
+    #[Route('/miPerfil/{id_usuario}', name:'miPerfil')]
+    public function miPerfil(EntityManagerInterface $entityManager, $id_usuario)
+    {
+        $usuario = $entityManager->getRepository(Usuario::class)->find($id_usuario);
+        
+        if (!$usuario) {
+            throw $this->createNotFoundException('Usuario no encontrado');
+        }
+
+        $posts = $usuario->getPosts();
+
+        return $this->render("perfil.html.twig", [
+            'posts' => $posts,
+        ]);
     }
 
 	// #[Route('/productos/{id}', name:'productos')]

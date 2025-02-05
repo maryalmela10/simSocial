@@ -1,27 +1,39 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Perfil de {{ app.user.nombre }}{% endblock %}
-
-{% block contenido %}
-    <h1>Perfil de {{ app.user.nombre }}</h1>
-
-        {# <div class="new-post-form">
-            <h2>Crear nuevo post</h2>
-            {{ form_start(form) }}
-                {{ form_row(form.contenido) }}
-                <button type="submit">Publicar</button>
-            {{ form_end(form) }}
-        </div> #}
-
-    <div class="user-posts">
-        <h2>Posts de {{ app.user.nombre }}</h2>
-        {% for post in posts %}
-            <div class="post">
-                <p>{{ post.contenido }}</p>
-                <small>{{ post.fecha_publicacion|date('d/m/Y H:i') }} </small>
-                {# <a href="{{ path('post', {'id': post.id}) }}">Ver post</a> #}
-            </div>
-        {% endfor %}
-    </div>
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/stylesheetPerfil.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
+{% block contenido %}
+   <div class="profile-container">
+    <h2>Mi Perfil</h2>
+    
+    <div class="profile-info">
+        {# <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="profile-avatar"> #}
+        <h3>{{ app.user.nombre ~ ' ' ~ app.user.apellido }}</h3>
+        <p>Email: {{ app.user.email }}</p>
+        <p>Registrado: {{ app.user.fecha_registro|date("d/m/Y") }}</p>
+    </div>
+
+        <!-- Formulario para crear nuevo post (solo visible en el perfil propio) -->
+        <form method="POST" action="" class="new-post-form">
+            <textarea name="contenido" placeholder="¿Qué estás pensando?"></textarea>
+            <button type="submit">Publicar</button>
+        </form>
+
+    <!-- Lista de posts propios -->
+    <div class="posts-list">
+        {% for post in posts %}
+        <div class="post">
+            <p>{{ post.contenido }}</p>
+            <small>
+                Publicado el {{ post.fecha_publicacion|date("d/m/Y") }} a las {{ post.fecha_publicacion|date("H:i") }}
+                {# | {{ post.comentarios.count }} comentarios #}
+            </small>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
