@@ -20,9 +20,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+
+
 #[IsGranted('ROLE_USER')]
 class PedidosBase extends AbstractController
 {
+    
 	#[Route('/inicio', name:'inicio')]
     public function mostrarInicio(EntityManagerInterface $entityManager) {
         // $categorias = $entityManager->getRepository(Categoria::class)->findAll();
@@ -30,7 +33,24 @@ class PedidosBase extends AbstractController
         return $this->render("inicio.html.twig");
     }
     
+<<<<<<< Updated upstream
 
+=======
+    #[Route('/verPost/{id_usuario}', name: 'verPost')]
+    public function verPost(EntityManagerInterface $entityManager, $id_usuario) {
+        $usuario = $entityManager->getRepository(Usuario::class)->find($id_usuario);
+    
+        if (!$usuario) {
+            throw $this->createNotFoundException('Usuario no encontrado');
+        }
+    
+        $posts = $usuario->getPosts();
+    
+        return $this->render("perfil.html.twig", [
+            'posts' => $posts
+        ]);
+    }
+>>>>>>> Stashed changes
     // #[Route('/verPost/{id_usuario}', name:'verPost')]
     // public function verPost(EntityManagerInterface $entityManager, $id_usuario) {
     //     $posts = $entityManager->getRepository(Usuario::class)->find($id_usuario)->getPosts();
@@ -75,6 +95,55 @@ class PedidosBase extends AbstractController
         // $categorias = $entityManager->getRepository(Categoria::class)->findAll();
         // return $this->render("categorias.html.twig", ['categorias'=>$categorias]);
         return $this->render("perfil.html.twig",['posts'=>$posts]);
+    }
+
+    #[Route('/post/{id}', name: 'ver_post')]
+    public function verPostDetalle(EntityManagerInterface $entityManager, $id, Request $request) {
+        // Encuentra el post por su ID
+        $post = $entityManager->getRepository(Post::class)->find($id);
+        
+        if (!$post) {
+            throw $this->createNotFoundException('El post no existe.');
+        }
+        
+        // Obtiene los comentarios asociados al post
+        $comentarios = $post->getComentarios();
+        
+        // Obtiene el usuario autenticado directamente con $this->getUser()
+        $usuario = $this->getUser();
+    
+        // Devuelve la vista con los datos del post y comentarios
+        return $this->render("post.html.twig", [
+            'post' => $post,
+            'comentarios' => $comentarios
+        ]);
+    }
+    
+    #[Route('/post/{id}/comentar', name: 'agregar_comentario', methods: ['POST'])]
+    public function agregarComentario(int $id, Request $request, EntityManagerInterface $entityManager, Security $security) {
+        $post = $entityManager->getRepository(Post::class)->find($id);
+    
+        if (!$post) {
+            throw $this->createNotFoundException('El post no existe.');
+        }
+    
+        $contenido = $request->request->get('contenido');
+        if (!$contenido) {
+            return $this->redirectToRoute('ver_post', ['id' => $id]);
+        }
+    
+        $usuario = $security->getUser(); // Obtiene el usuario autenticado
+    
+        $comentario = new Comentario();
+        $comentario->setContenido($contenido);
+        $comentario->setFechaComentario(new \DateTime());
+        $comentario->setPost($post);
+        $comentario->setUsuario($usuario);
+    
+        $entityManager->persist($comentario);
+        $entityManager->flush();
+    
+        return $this->redirectToRoute('ver_post', ['id' => $id]);
     }
 
 	// #[Route('/productos/{id}', name:'productos')]
