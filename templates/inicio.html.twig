@@ -2,7 +2,7 @@
 {% block title %}Inicio{% endblock %}
 {% block contenido %}
 <h1>Bienvenido a la Red Social</h1>
-   <a href="{{ path('verPost',{'id_usuario': app.user.id}) }}">{{app.user.id}}</a>
-   <a href="" >perfil de pablo</a><br>
+   {# <a href="{{ path('verPost',{'id_usuario': app.user.id}) }}">{{app.user.id}}</a> #}
+   <a href="{{ path('miPerfil',{'id_usuario': app.user.id}) }}">Mi perfil</a>
     <a href="{{ path('listar_usuarios') }}">Ver todos los usuarios</a>
 {% endblock %}

@@ -35,6 +35,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     private $rol;
 
     #[ORM\OneToMany(targetEntity:'Post', mappedBy:'usuario')]
+    #[ORM\OrderBy(['fecha_publicacion' => 'DESC'])]
 	private $posts;
 
     public function __construct() {

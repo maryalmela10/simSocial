@@ -1,0 +1,57 @@
+/* perfil propio */
+.profile-container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.profile-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.new-post-form {
+    margin-bottom: 20px;
+}
+
+.new-post-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+.new-post-form button {
+    background-color: #99e7ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.posts-list .post {
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.posts-list .post small {
+    color: #777;
+    display: block;
+    margin-top: 5px;
+}

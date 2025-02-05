@@ -4,7 +4,9 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}SimSocial{% endblock %}</title>
-        <link href="{{ asset('css/stylesheetCabecera.css') }}" rel="stylesheet" type="text/css">
+          {% block stylesheets %}
+            <link href="{{ asset('css/stylesheetCabecera.css') }}" rel="stylesheet">
+        {% endblock %}
     </head>
     <body>
 	<header class="header-social">
