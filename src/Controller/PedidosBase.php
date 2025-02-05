@@ -69,6 +69,13 @@ class PedidosBase extends AbstractController
             'posts' => $posts,
         ]);
     }
+        #[Route('/verPost/{id_usuario}', name:'verPost')]
+    public function verPost(EntityManagerInterface $entityManager, $id_usuario) {
+        $posts = $entityManager->getRepository(Usuario::class)->find($id_usuario)->getPosts();
+        // $categorias = $entityManager->getRepository(Categoria::class)->findAll();
+        // return $this->render("categorias.html.twig", ['categorias'=>$categorias]);
+        return $this->render("perfil.html.twig",['posts'=>$posts]);
+    }
 
 	// #[Route('/productos/{id}', name:'productos')]
     // public function mostrarProductos(EntityManagerInterface $entityManager, $id) {
