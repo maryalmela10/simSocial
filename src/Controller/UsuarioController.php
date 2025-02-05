@@ -5,8 +5,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Entity\Usuario;
 
+#[IsGranted('ROLE_USER')]
 class UsuarioController extends AbstractController
 {
     private $entityManager;
@@ -19,34 +22,49 @@ class UsuarioController extends AbstractController
     #[Route('/inicio', name: 'inicio')]
     public function inicio(): Response
     {
+        $usuarioActual = $this->getUser();
         $usuarios = $this->entityManager->getRepository(Usuario::class)->findAll();
 
-        return $this->render('inicio.html.twig', [
-            'usuarios' => $usuarios,
-        ]);
+        $todosUsuarios = $this->entityManager->getRepository(Usuario::class)->findAll();
+    
+    $usuarios = array_filter($todosUsuarios, function($usuario) use ($usuarioActual) {
+        return $usuario !== $usuarioActual;
+    });
+
+    return $this->render('inicio.html.twig', [
+        'usuarios' => $usuarios,
+    ]);
     }
 
-    #[Route('/usuarios', name: 'listar_usuarios')]
-    public function listarUsuarios(): Response
-    {
-        $usuarios = $this->entityManager->getRepository(Usuario::class)->findAll();
+    // #[Route('/usuarios', name: 'listar_usuarios')]
+    // public function listarUsuarios(): Response
+    // {
+    //     $usuarioActual = $this->getUser();
+    //     $todosUsuarios = $this->entityManager->getRepository(Usuario::class)->findAll();
+    
+    // $usuarios = array_filter($todosUsuarios, function($usuario) use ($usuarioActual) {
+    //     return $usuario !== $usuarioActual;
+    // });
 
-        return $this->render('usuarios.html.twig', [
-            'usuarios' => $usuarios,
-        ]);
-    }
+    // return $this->render('usuarios.html.twig', [
+    //     'usuarios' => $usuarios,
+    //     ]);
+    // }
 
     #[Route('/usuario/{id}', name: 'ver_perfil')]
-    public function verPerfil(int $id): Response
+    public function verPerfil(EntityManagerInterface $entityManager, int $id) 
     {
-        $usuario = $this->entityManager->getRepository(Usuario::class)->find($id);
-
-        if (!$usuario) {
-            throw $this->createNotFoundException('Usuario no encontrado');
-        }
-
-        return $this->render('perfilOtro.html.twig', [
-            'usuario' => $usuario,
-        ]);
+         $usuario = $entityManager->getRepository(Usuario::class)->find($id);
+         
+         if (!$usuario) {
+             throw $this->createNotFoundException('Usuario no encontrado');
+         }
+ 
+         $posts = $usuario->getPosts();
+ 
+         return $this->render("perfilOtro.html.twig", [
+             'posts' => $posts,
+             'usuario' => $usuario
+         ]);
     }
 }
