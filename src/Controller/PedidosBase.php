@@ -27,6 +27,7 @@ class PedidosBase extends AbstractController
         // return $this->render("categorias.html.twig", ['categorias'=>$categorias]);
         return $this->render("inicio.html.twig");
     }
+    
 
     #[Route('/verPost/{id_usuario}', name:'verPost')]
     public function verPost(EntityManagerInterface $entityManager, $id_usuario) {
