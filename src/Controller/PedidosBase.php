@@ -17,7 +17,8 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 #[IsGranted('ROLE_USER')]
 class PedidosBase extends AbstractController
@@ -30,17 +31,32 @@ class PedidosBase extends AbstractController
     }
     
 
-    #[Route('/verPost/{id_usuario}', name:'verPost')]
-    public function verPost(EntityManagerInterface $entityManager, $id_usuario) {
-        $posts = $entityManager->getRepository(Usuario::class)->find($id_usuario)->getPosts();
-        // $categorias = $entityManager->getRepository(Categoria::class)->findAll();
-        // return $this->render("categorias.html.twig", ['categorias'=>$categorias]);
-        return $this->render("perfil.html.twig",['posts'=>$posts]);
-    }
+    // #[Route('/verPost/{id_usuario}', name:'verPost')]
+    // public function verPost(EntityManagerInterface $entityManager, $id_usuario) {
+    //     $posts = $entityManager->getRepository(Usuario::class)->find($id_usuario)->getPosts();
+    //     // $categorias = $entityManager->getRepository(Categoria::class)->findAll();
+    //     // return $this->render("categorias.html.twig", ['categorias'=>$categorias]);
+    //     return $this->render("perfil.html.twig",['posts'=>$posts]);
+    // }
 
     #[Route('/miPerfil/{id_usuario}', name:'miPerfil')]
-    public function miPerfil(EntityManagerInterface $entityManager, $id_usuario)
+    public function miPerfil(EntityManagerInterface $entityManager, Security $security, $id_usuario)
     {
+        // Obtener el usuario actual
+        $usuarioActual = $security->getUser();
+
+        // Verificar si el usuario está autenticado
+        if (!$usuarioActual) {
+            // Si no está autenticado, redirigir al login
+            return new RedirectResponse($this->generateUrl('ctrl_login'));
+        }
+
+        // Verificar si el id_usuario coincide con el usuario autenticado
+        if ($usuarioActual->getId() != $id_usuario) {
+            // Si no coincide, redirigir al inicio
+            return new RedirectResponse($this->generateUrl('inicio'));
+        }
+
         $usuario = $entityManager->getRepository(Usuario::class)->find($id_usuario);
         
         if (!$usuario) {
