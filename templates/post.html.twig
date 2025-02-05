@@ -1,14 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
-    <h1>{{ post.titulo }}</h1>
+{% block title %}Perfil de {{ app.user.nombre }}{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/stylesheetPerfil.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block contenido %}
+    <h1>{{ app.user.nombre }}</h1>
     <p>{{ post.contenido }}</p>
     <hr>
 
     <h2>Comentarios</h2>
     {% for comentario in comentarios %}
         <div>
-            <strong>{{ comentario.usuario.username }}</strong>
+            <strong>{{ comentario.usuario.getUserIdentifier() }}</strong>  {# Cambié username por getUserIdentifier() #}
             <span>{{ comentario.fechaComentario|date('d-m-Y H:i') }}</span>
             <p>{{ comentario.contenido }}</p>
         </div>
