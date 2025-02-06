@@ -11,7 +11,6 @@
     <div class="profile-info">
         {# <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="profile-avatar"> #}
         <h3>{{ app.user.nombre|capitalize }} {{ app.user.apellido|capitalize }}</h3>
-        <h3>{{ app.user.nombre }} {{ app.user.apellido }}</h3>
         <p>Email: {{ app.user.email }}</p>
         <p>Registrado: {{ app.user.fecha_registro|date("d/m/Y") }}</p>
     </div>
