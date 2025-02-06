@@ -5,11 +5,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
+<<<<<<< Updated upstream
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Entity\Usuario;
 
 #[IsGranted('ROLE_USER')]
+=======
+use App\Entity\Usuario;
+
+>>>>>>> Stashed changes
 class UsuarioController extends AbstractController
 {
     private $entityManager;
@@ -19,6 +24,7 @@ class UsuarioController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
+<<<<<<< Updated upstream
     #[Route('/inicio', name: 'inicio')]
     public function inicio(): Response
     {
@@ -71,5 +77,29 @@ class UsuarioController extends AbstractController
              'posts' => $posts,
              'usuario' => $usuario
          ]);
+=======
+    #[Route('/usuarios', name: 'listar_usuarios')]
+    public function listarUsuarios(): Response
+    {
+        $usuarios = $this->entityManager->getRepository(Usuario::class)->findAll();
+
+        return $this->render('usuarios.html.twig', [
+            'usuarios' => $usuarios,
+        ]);
+    }
+
+    #[Route('/usuario/{id}', name: 'ver_perfil')]
+    public function verPerfil(int $id): Response
+    {
+        $usuario = $this->entityManager->getRepository(Usuario::class)->find($id);
+
+        if (!$usuario) {
+            throw $this->createNotFoundException('Usuario no encontrado');
+        }
+
+        return $this->render('perfil.html.twig', [
+            'usuario' => $usuario,
+        ]);
+>>>>>>> Stashed changes
     }
 }

@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 {% block stylesheets %}
     <link href="{{ asset('css/stylesheetUsuarios.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
@@ -18,4 +19,21 @@
         </div>
     </div>
 </div>
+=======
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista de Usuarios{% endblock %}
+
+{% block contenido %}
+    <h1>Lista de Usuarios</h1>
+    <ul>
+        {% for usuario in usuarios %}
+            <li>
+                <a href="{{ path('ver_perfil', { 'id': usuario.id }) }}">
+                    {{ usuario.nombre }} {{ usuario.apellido }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+>>>>>>> Stashed changes
 {% endblock %}
