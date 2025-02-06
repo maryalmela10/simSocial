@@ -14,7 +14,8 @@
         <div class="post">
             <p>{{ post.contenido }}</p>
             <small>
-                Publicado el {{ post.fecha_publicacion|date("d/m/Y") }} a las {{ post.fecha_publicacion|date("H:i") }}
+                Publicado el {{ post.fecha_publicacion|date("d/m/Y") }} a las {{ post.fecha_publicacion|date("H:i") }} - Comentarios: {{ post.comentarios|length }}
+
             </small>
             <br>
             <a href="{{ path('ver_post', { id: post.id }) }}">Ver más</a> {# Enlace al detalle del post #}
