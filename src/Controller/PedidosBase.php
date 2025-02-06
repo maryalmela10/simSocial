@@ -29,7 +29,6 @@ class PedidosBase extends AbstractController
         // return $this->render("categorias.html.twig", ['categorias'=>$categorias]);
         return $this->render("inicio.html.twig");
     }
-    
 
     #[Route('/miPerfil/{id_usuario}', name:'miPerfil')]
     public function miPerfil(EntityManagerInterface $entityManager, Security $security, $id_usuario)
