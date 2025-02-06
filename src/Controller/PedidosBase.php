@@ -30,8 +30,8 @@ class PedidosBase extends AbstractController
         return $this->render("inicio.html.twig");
     }
 
-    #[Route('/miPerfil/{id_usuario}', name:'miPerfil')]
-    public function miPerfil(EntityManagerInterface $entityManager, Security $security, $id_usuario)
+    #[Route('/miPerfil/{id_usuario}', name: 'miPerfil')]
+    public function miPerfil(EntityManagerInterface $entityManager, Security $security, $id_usuario, Request $request)
     {
         // Obtener el usuario actual
         $usuarioActual = $security->getUser();
@@ -49,22 +49,41 @@ class PedidosBase extends AbstractController
         }
 
         $usuario = $entityManager->getRepository(Usuario::class)->find($id_usuario);
-        
+
         if (!$usuario) {
             throw $this->createNotFoundException('Usuario no encontrado');
+        }
+
+        // Crear un nuevo post si se envió el formulario
+        if ($request->isMethod('POST')) {
+            $contenido = $request->request->get('contenido');
+            if ($contenido) {
+                $post = new Post();
+                $post->setContenido($contenido);
+                $post->setFecha_publicacion(new \DateTime());
+                $post->setUsuario($usuario);
+
+                $entityManager->persist($post);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Post creado exitosamente.');
+                return $this->redirectToRoute('miPerfil', ['id_usuario' => $id_usuario]);
+            }
         }
 
         $posts = $usuario->getPosts();
         // Añadir cantidad de comentarios a cada post
         foreach ($posts as $post) {
-        $post->comentariosCount = count($post->getComentarios());
+            $post->comentariosCount = count($post->getComentarios());
         }
 
         return $this->render("perfil.html.twig", [
             'posts' => $posts,
+            'usuario' => $usuario,  // Añadimos esta línea para pasar el usuario a la plantilla
         ]);
     }
-        #[Route('/verPost/{id_usuario}', name:'verPost')]
+
+    #[Route('/verPost/{id_usuario}', name:'verPost')]
     public function verPost(EntityManagerInterface $entityManager, $id_usuario) {
         $posts = $entityManager->getRepository(Usuario::class)->find($id_usuario)->getPosts();
         // $categorias = $entityManager->getRepository(Categoria::class)->findAll();
