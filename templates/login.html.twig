@@ -4,14 +4,21 @@
     <head>
         <meta charset="UTF-8">
         <title>Login</title>
+        {% block stylesheets %}
+            <link href="{{ asset('css/stylesheetlogin.css') }}" rel="stylesheet" type="text/css">
+        {% endblock %}
     </head>
-    <body>	
-    	<form action="{{ path('ctrl_login') }}" method="post">
-			Usuario
-			<input type="text" id="username" name="_username" required/>
-			Clave
-			<input type="password" id="password" name="_password" required/>
-			<button type="submit">login</button>
-		</form>
+    <body>
+        <div class="login-container">
+            <div class="login-header">
+                <h1 class="login-title">Iniciar Sesión</h1>
+            </div>
+            <form action="{{ path('ctrl_login') }}" method="post">
+                <input type="text" id="username" name="_username" placeholder="Usuario" required/>
+                <input type="password" id="password" name="_password" placeholder="Clave" required/>
+                <button type="submit">Iniciar Sesión</button>
+            </form>
+        </div>
     </body>
 </html>
+
