@@ -25,7 +25,7 @@ h1 {
     margin-bottom: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     transition: all 0.3s ease;
-    border: 2px solid #1a3a63; /* Contorno transparente por defecto */
+    border: 2px solid #1a3a63;
 }
 
 .post:hover {
@@ -34,8 +34,8 @@ h1 {
 
 .post:focus, .post:active {
     outline: none;
-    border-color: #99e7ff; /* Color del contorno cuando se selecciona */
-    box-shadow: 0 0 10px rgba(153, 231, 255, 0.5); /* Sombreado cuando se selecciona */
+    border-color: #99e7ff;
+    box-shadow: 0 0 10px rgba(153, 231, 255, 0.5);
 }
 
 .post p {
@@ -68,12 +68,55 @@ h1 {
     color: white;
 }
 
+/* Estilos para el div de solicitud de amistad */
+.solicitud-amistad {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    margin-top: 30px;
+}
+
+.solicitud-amistad p {
+    color: #333;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.solicitud-amistad button {
+    background-color: #99e7ff;
+    color: #333;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.solicitud-amistad button:hover {
+    background-color: #dea1ff;
+    color: white;
+    transform: scale(1.05);
+}
+
+#mensaje-solicitud {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
 @media (max-width: 600px) {
     .container {
         padding: 10px;
     }
     
-    .post {
+    .post, .solicitud-amistad {
         padding: 10px;
     }
 }

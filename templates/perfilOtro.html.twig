@@ -8,18 +8,53 @@
 
 
 {% block contenido %}
-    <h1>{{ usuario.nombre|capitalize }} {{ usuario.apellido|capitalize }}</h1>
-    <div class="posts-list">
-        {% for post in posts %}
-        <div class="post">
-            <p>{{ post.contenido }}</p>
-            <small>
-                Publicado el {{ post.fecha_publicacion|date("d/m/Y") }} a las {{ post.fecha_publicacion|date("H:i") }} - Comentarios: {{ post.comentarios|length }}
-
-            </small>
-            <br>
-            <a href="{{ path('ver_post', { id: post.id }) }}">Ver más</a> {# Enlace al detalle del post #}
+    {% if amistad and amistad.estado == 'aceptado' %}
+        <h1>{{ usuario.nombre|capitalize }} {{ usuario.apellido|capitalize }}</h1>
+        <div class="posts-list">
+            {% for post in posts %}
+            <div class="post">
+                <p>{{ post.contenido }}</p>
+                <small>
+                    Publicado el {{ post.fecha_publicacion|date("d/m/Y") }} a las {{ post.fecha_publicacion|date("H:i") }} - Comentarios: {{ post.comentarios|length }}
+                </small>
+                <br>
+                <a href="{{ path('ver_post', { id: post.id }) }}">Ver más</a> {# Enlace al detalle del post #}
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
+    {% elseif amistad and amistad.estado == 'pendiente' %}
+          <div class="solicitud-amistad">
+            <p>Tienes una solicitud de amistad pendiente con este usuario.</p>
+        </div>
+    {% else %}
+        <div class="solicitud-amistad">
+            <p>No tienes acceso al perfil completo de este usuario.</p>
+            <button onclick="enviarSolicitudAmistad({{ usuario.id }})">Enviar solicitud de amistad</button>
+        </div>
+        <div id="mensaje-solicitud" style="display: none;"></div>
+{% endif %}
 {% endblock %}
+{% block javascripts %}
+    <script>
+        function enviarSolicitudAmistad(idUsuario) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var respuesta = JSON.parse(this.responseText);
+                var mensajeDiv = document.getElementById("mensaje-solicitud");
+                mensajeDiv.innerHTML = respuesta.message;
+                mensajeDiv.style.display = "block";
+                setTimeout(function() {
+                    location.reload();
+                }, 2000); // Recarga la página después de 2 segundos
+            }
+        };
+        xhttp.open("POST", "/solicitud-amistad/" + idUsuario, true);
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        xhttp.send();
+        return false;
+    }
+    </script>
+{% endblock %}
+
