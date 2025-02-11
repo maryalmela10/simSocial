@@ -33,10 +33,16 @@ class UsuarioController extends AbstractController
             return $usuario !== $usuarioActual;
         });
 
+        // Obtener los posts
+        $posts = $this->entityManager->getRepository(\App\Entity\Post::class)
+            ->findBy([], ['fecha_publicacion' => 'DESC'], 10);
+
         return $this->render('inicio.html.twig', [
             'usuarios' => $usuarios,
+            'posts' => $posts,
         ]);
     }
+
 
     #[Route('/usuario/{id}', name: 'ver_perfil')]
     public function verPerfil(EntityManagerInterface $entityManager, int $id)
