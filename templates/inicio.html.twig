@@ -7,27 +7,8 @@
 {% block contenido %}
 <div class="container">
     <div class="main-content">
-        <a href="{{ path('miPerfil',{'id_usuario': app.user.id}) }}" class="perfil"> 🧑🏻‍💻Mi perfil</a>
-        
-        <h2>Últimos Posts</h2>
-        <div class="posts-list">
-            {% if posts is defined and posts|length > 0 %}
-                {% for post in posts %}
-                    <div class="post">
-                        <p>{{ post.contenido }}</p>
-                        <small>
-                            Por {{ post.usuario.nombre }} {{ post.usuario.apellido }} 
-                            el {{ post.fecha_publicacion|date("d/m/Y") }} a las {{ post.fecha_publicacion|date("H:i") }}
-                        </small>
-                        <br>
-                        <a href="{{ path('ver_post', { id: post.id }) }}">Ver más</a>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p>No hay posts disponibles en este momento.</p>
-            {% endif %}
-        </div>
+        <a href="{{ path('miPerfil',{'id_usuario': app.user.id}) }}"class="perfil"> 🧑🏻‍💻Mi perfil</a>
     </div>
-    {% include 'usuarios.html.twig' %}
+        {% include 'usuarios.html.twig' %}
 </div>
 {% endblock %}
