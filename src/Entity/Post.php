@@ -25,8 +25,18 @@ class Post
     #[ORM\OneToMany(targetEntity: 'Comentario', mappedBy: 'post')]
     private $comentarios;
 
+    #[ORM\OneToMany(targetEntity: 'Reaccion', mappedBy: 'post', cascade: ['remove'])]
+    private $reacciones;
+
+    #[ORM\Column(type:'integer', name:'likes', options:["default" => 0])]
+    private int $likes = 0;
+
+    #[ORM\Column(type:'integer', name:'dislikes', options:["default" => 0])]
+    private int $dislikes = 0;
+
     public function __construct(){
         $this->comentarios = new ArrayCollection();
+        $this->reacciones = new ArrayCollection();
     }
 
     public function getComentarios(){
@@ -66,4 +76,28 @@ class Post
         return $this->fecha_publicacion = $fecha_Publicacion;
     }
 
+    public function getReacciones()
+    {
+        return $this->reacciones;
+    }
+
+    public function contarReacciones(string $tipo): int
+    {
+        return $this->reacciones->filter(fn($r) => $r->getTipo() === $tipo)->count();
+    }    
+    public function getLikes(): int {
+        return $this->likes;
+    }
+    
+    public function getDislikes(): int {
+        return $this->dislikes;
+    }
+    
+    public function addLike(): void {
+        $this->likes++;
+    }
+    
+    public function addDislike(): void {
+        $this->dislikes++;
+    }
 }
