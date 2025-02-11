@@ -8,81 +8,65 @@
 
 {% block contenido %}
     <div class="profile-container">
-      <div class="post-container">
-        <p>{{ post.contenido }}</p>
-        <small>
-            Publicado el {{ post.fecha_Publicacion|date("d/m/Y") }} a las {{ post.fecha_Publicacion|date("H:i") }}  
-            - Comentarios: {{ comentarios|length }}
-        </small>
-    </div>    
-    <!-- Sección de reacciones -->
-    <div class="btn-reaccion">
-        <button onclick="reaccionarPost({{ post.id }}, 'me_gusta')">
-            👍 Me Gusta <span id="likes-{{ post.id }}">{{ post.contarReacciones('me_gusta') }}</span>
-        </button>
-        <button onclick="reaccionarPost({{ post.id }}, 'no_me_gusta')">
-            👎 No Me Gusta <span id="dislikes-{{ post.id }}">{{ post.contarReacciones('no_me_gusta') }}</span>
-        </button>
-    </div>
-
-    <div class="profile-info">
-        <!-- Sección de comentarios -->
-        <h2>Comentarios</h2>
-        {% for comentario in comentarios %}
-            <div>
-                <strong>{{ comentario.usuario.getUserIdentifier() }}</strong>  
-                <span>{{ comentario.fechaComentario|date('d-m-Y H:i') }}</span>
-                <p>{{ comentario.contenido }}</p>
+        <div class="post-container">
+            <p>{{ post.contenido }}</p>
+            
+            <!-- Sección de reacciones -->
+            <div class="btn-reaccion" data-post-id="{{ post.id }}" data-tipo="me_gusta">
+                👍 Me Gusta <span id="likes-{{ post.id }}">{{ post.contarReacciones('me_gusta') }}</span>
             </div>
-        {% else %}
-            <p class="no-comments">No hay comentarios aún.</p>
-        {% endfor %}
-    </div>    
+            <div class="btn-reaccion" data-post-id="{{ post.id }}" data-tipo="no_me_gusta">
+                👎 No Me Gusta <span id="dislikes-{{ post.id }}">{{ post.contarReacciones('no_me_gusta') }}</span>
+            </div>
+        </div>
 
-    <!-- Formulario para añadir comentario -->
-    <h3>Añadir un comentario</h3>
-    <form action="{{ path('agregar_comentario', {'id': post.id}) }}" method="POST">
-        <textarea name="contenido" required></textarea>
-        <button type="submit">Comentar</button>
-    </form>
-        <!-- Mensaje de reacción -->
-        <div id="mensaje-reaccion" style="display: none;"></div>
+        <div class="profile-info">
+            <h2>Comentarios</h2>
+            {% for comentario in comentarios %}
+                <div>
+                    <strong>{{ comentario.usuario.getUserIdentifier() }}</strong>  
+                    <span>{{ comentario.fechaComentario|date('d-m-Y H:i') }}</span>
+                    <p>{{ comentario.contenido }}</p>
+                </div>
+            {% else %}
+                <p>No hay comentarios aún.</p>
+            {% endfor %}
+        </div>
+
+        <h3>Añadir un comentario</h3>
+        <form action="{{ path('agregar_comentario', {'id': post.id}) }}" method="POST">
+            <textarea name="contenido" required></textarea>
+            <button type="submit">Comentar</button>
+        </form>
     </div>
-{% endblock %}
 
-{% block javascripts %}
-    <script>
-        function reaccionarPost(postId, tipo) {
-            console.log("Enviando reacción:", tipo);
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".btn-reaccion").forEach(button => {
+        button.addEventListener("click", function () {
+            const postId = this.dataset.postId;
+            const tipo = this.dataset.tipo;
 
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-                if (this.readyState == 4) {
-                    if (this.status == 200) {
-                        var respuesta = JSON.parse(this.responseText);
-                        document.getElementById(`likes-${postId}`).textContent = respuesta.likes;
-                        document.getElementById(`dislikes-${postId}`).textContent = respuesta.dislikes;
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/post/" + postId + "/reaccionar", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
 
-                        var mensajeDiv = document.getElementById("mensaje-reaccion");
-                        mensajeDiv.innerHTML = respuesta.message;
-                        mensajeDiv.style.display = "block";
-
-                        setTimeout(function() {
-                            mensajeDiv.style.display = "none";
-                        }, 2000);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var data = JSON.parse(xhr.responseText);
+                        document.getElementById(`likes-${postId}`).textContent = data.likes;
+                        document.getElementById(`dislikes-${postId}`).textContent = data.dislikes;
                     } else {
-                        console.error("Error en la reacción:", this.responseText);
+                        console.error("Error en la solicitud: " + xhr.status);
                     }
                 }
             };
 
-            xhttp.open("POST", "/post/" + postId + "/reaccionar", true);
-            
-            // Cambiamos de JSON a FormData
-            var formData = new FormData();
-            formData.append("tipo", tipo);
+            xhr.send(JSON.stringify({ tipo: tipo }));
+        });
+    });
+});
+</script>
 
-            xhttp.send(formData);
-        }
-    </script>
 {% endblock %}

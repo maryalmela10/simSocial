@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Usuario;
 use App\Entity\Post;
 use App\Entity\Comentario;
-use App\Entity\Reaccion;
+use App\Entity\Pedido;
 use App\Entity\PedidoProducto;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
@@ -19,9 +19,6 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\JsonResponse;
-
-
 
 #[IsGranted('ROLE_USER')]
 class PedidosBase extends AbstractController
@@ -166,57 +163,6 @@ class PedidosBase extends AbstractController
         return $this->redirectToRoute('ver_post', ['id' => $id]);
     }
 
-    #[Route('/post/{id}/reaccionar', name: 'reaccionar_post', methods: ['POST'])]
-    public function reaccionarPost(Post $post, Request $request, EntityManagerInterface $entityManager): Response
-    {
-        // Obtener el tipo de reacción desde request
-        $tipo = $request->request->get('tipo'); 
-
-        if (!in_array($tipo, ['me_gusta', 'no_me_gusta'])) {
-            return new Response(json_encode(['message' => 'Tipo de reacción no válido']), 400, ['Content-Type' => 'application/json']);
-        }
-
-        $usuario = $this->getUser();
-
-        // Buscar si el usuario ya reaccionó a este post
-        $reaccion = $entityManager->getRepository(Reaccion::class)->findOneBy([
-            'usuario' => $usuario,
-            'post' => $post
-        ]);
-
-        if ($reaccion) {
-            if ($reaccion->getTipo() === $tipo) {
-                // Si la reacción es la misma, eliminarla
-                $entityManager->remove($reaccion);
-                $mensaje = 'Reacción eliminada';
-            } else {
-                // Si la reacción es diferente, actualizarla
-                $reaccion->setTipo($tipo);
-                $mensaje = 'Reacción actualizada';
-            }
-        } else {
-            // Crear una nueva reacción
-            $reaccion = new Reaccion();
-            $reaccion->setUsuario($usuario);
-            $reaccion->setPost($post);
-            $reaccion->setTipo($tipo);
-            $entityManager->persist($reaccion);
-            $mensaje = 'Reacción añadida';
-        }
-
-        $entityManager->flush();
-
-        // Contar las reacciones después de actualizar
-        $likes = $entityManager->getRepository(Reaccion::class)->count(['post' => $post, 'tipo' => 'me_gusta']);
-        $dislikes = $entityManager->getRepository(Reaccion::class)->count(['post' => $post, 'tipo' => 'no_me_gusta']);
-
-        return new Response(json_encode([
-            'message' => $mensaje,
-            'likes' => $likes,
-            'dislikes' => $dislikes
-        ]), 200, ['Content-Type' => 'application/json']);
-    }
-    
 	// #[Route('/productos/{id}', name:'productos')]
     // public function mostrarProductos(EntityManagerInterface $entityManager, $id) {
     //     $productos = $entityManager->find(Categoria::class,$id)->getProductos();
