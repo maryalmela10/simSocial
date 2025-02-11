@@ -60,3 +60,14 @@ VALUES ('1234', 'pablo', 'pozo', 'pablo@email.com');
 -- Insertar un usuario administrador
 INSERT INTO usuarios (clave, rol, nombre, apellido, email)
 VALUES ('1234', 'ROLE_ADMIN', 'mary', 'almela', 'mary@email.com');
+
+-- Tabla para almacenar la foto de perfil (si un usuario tiene foto)
+CREATE TABLE reacciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    post_id INT NOT NULL,
+    tipo ENUM('me_gusta', 'me_divierte') NOT NULL,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY (post_id) REFERENCES posts(id),
+    UNIQUE (usuario_id, post_id, tipo) -- Evita que un usuario reaccione dos veces con el mismo tipo
+);
