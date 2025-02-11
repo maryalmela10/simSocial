@@ -48,45 +48,6 @@ class UsuarioController extends AbstractController
             return $this->redirectToRoute('miPerfil', ['id_usuario' => $id]);
         }
 
-<<<<<<< Updated upstream
-        $usuario = $entityManager->getRepository(Usuario::class)->find($id);
-
-        if (!$usuario) {
-            throw $this->createNotFoundException('Usuario no encontrado');
-        }
-
-        $posts = $usuario->getPosts();
-
-        return $this->render("perfilOtro.html.twig", [
-            'posts' => $posts,
-            'usuario' => $usuario
-        ]);
-    }
-
-    #[Route('/buscar-usuarios', name: 'buscar_usuarios', methods: ['POST'])]
-    public function buscarUsuarios(Request $request): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
-        $query = $data['q'] ?? '';
-
-        $usuarios = $this->entityManager->getRepository(Usuario::class)->createQueryBuilder('u')
-            ->where('u.nombre LIKE :query OR u.email LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
-            ->getQuery()
-            ->getResult();
-
-        $resultados = array_map(function ($usuario) {
-            return [
-                'id' => $usuario->getId(),
-                'nombre' => $usuario->getNombre(),
-                'email' => $usuario->getEmail()
-            ];
-        }, $usuarios);
-
-        return new JsonResponse($resultados);
-    }
-
-=======
          $usuario = $entityManager->getRepository(Usuario::class)->find($id);
          
          if (!$usuario) {
@@ -167,5 +128,27 @@ class UsuarioController extends AbstractController
 
         return new Response(json_encode(['message' => 'Solicitud de amistad enviada']));
     }
->>>>>>> Stashed changes
+    
+    #[Route('/buscar-usuarios', name: 'buscar_usuarios', methods: ['POST'])]
+    public function buscarUsuarios(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $query = $data['q'] ?? '';
+
+        $usuarios = $this->entityManager->getRepository(Usuario::class)->createQueryBuilder('u')
+            ->where('u.nombre LIKE :query OR u.email LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->getQuery()
+            ->getResult();
+
+        $resultados = array_map(function ($usuario) {
+            return [
+                'id' => $usuario->getId(),
+                'nombre' => $usuario->getNombre(),
+                'email' => $usuario->getEmail()
+            ];
+        }, $usuarios);
+
+        return new JsonResponse($resultados);
+    }
 }
