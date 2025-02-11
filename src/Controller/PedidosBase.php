@@ -23,12 +23,33 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 #[IsGranted('ROLE_USER')]
 class PedidosBase extends AbstractController
 {
-	#[Route('/inicio', name:'inicio')]
-    public function mostrarInicio(EntityManagerInterface $entityManager) {
-        // $categorias = $entityManager->getRepository(Categoria::class)->findAll();
-        // return $this->render("categorias.html.twig", ['categorias'=>$categorias]);
-        return $this->render("inicio.html.twig");
+    #[Route('/inicio', name: 'inicio')]
+    public function mostrarInicio(EntityManagerInterface $entityManager)
+    {
+        $usuarioActual = $this->getUser();
+
+        // Obtener todos los posts, ordenados por fecha de publicación descendente
+        $posts = $entityManager->getRepository(Post::class)
+            ->findBy([], ['fecha_publicacion' => 'DESC'], 10);
+
+        $usuarios = $entityManager->getRepository(Usuario::class)
+            ->createQueryBuilder('u')
+            ->where('u != :usuarioActual')
+            ->setParameter('usuarioActual', $usuarioActual)
+            ->getQuery()
+            ->getResult();
+
+        // Añade este dump para depuración
+        dump($posts);
+
+        return $this->render("inicio.html.twig", [
+            'posts' => $posts,
+            'usuarios' => $usuarios
+        ]);
     }
+
+
+
 
     #[Route('/miPerfil/{id_usuario}', name: 'miPerfil')]
     public function miPerfil(EntityManagerInterface $entityManager, Security $security, $id_usuario, Request $request)
