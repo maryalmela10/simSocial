@@ -10,6 +10,9 @@
 {% block contenido %}
     {% if amistad and amistad.estado == 'aceptado' %}
         <h1>{{ usuario.nombre|capitalize }} {{ usuario.apellido|capitalize }}</h1>
+         <div class="eliminar-amigo">
+            <button class="btn-eliminar-amigo" onclick="abrirModal()">Eliminar amigo</button>
+        </div>
         <div class="posts-list">
             {% for post in posts %}
             <div class="post">
@@ -21,6 +24,17 @@
                 <a href="{{ path('ver_post', { id: post.id }) }}">Ver más</a> {# Enlace al detalle del post #}
             </div>
             {% endfor %}
+        </div>
+        
+              <!-- Modal de confirmación -->
+        <div id="modal-confirmacion" class="modal" display = 'none'>
+            <div class="modal-contenido">
+                <p>¿Estás seguro de que quieres eliminar a este amigo?</p>
+                <form action="{{ path('eliminar_amigo', {'id': usuario.id}) }}" method="post">
+                    <button type="submit" class="btn-confirmar">Confirmar</button>
+                    <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+                </form>
+            </div>
         </div>
     {% elseif amistad and amistad.estado == 'pendiente' %}
           <div class="solicitud-amistad">
@@ -75,6 +89,14 @@
         xhttp.send();
         return false;
     }
+
+        function abrirModal() {
+            document.getElementById('modal-confirmacion').style.display = 'block';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal-confirmacion').style.display = 'none';
+        }
     </script>
 {% endblock %}
 

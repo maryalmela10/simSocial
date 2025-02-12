@@ -77,7 +77,7 @@ class UsuarioController extends AbstractController
         if ($amistad) {
             $enviado_para_actual = $amistad->getUsuario_b_id() === $this->getUser()->getId();
         }
-        
+
          $posts = $usuario->getPosts();
  
          return $this->render("perfilOtro.html.twig", [
@@ -206,5 +206,41 @@ class UsuarioController extends AbstractController
         $entityManager->flush();
 
         return new JsonResponse(['message' => $mensaje]);
+    }
+
+    #[Route('/eliminar-amigo/{id}', name: 'eliminar_amigo', methods: ['POST'])]
+    public function eliminarAmigo(EntityManagerInterface $entityManager, int $id)
+    {
+        // Obtener el usuario actual
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual) {
+            return $this->redirectToRoute('ctrl_login');
+        }
+
+        // Buscar la relación de amistad en ambas direcciones
+        $amistad = $entityManager->getRepository(Amistad::class)->findOneBy([
+            'usuario_a_id' => $usuarioActual->getId(),
+            'usuario_b_id' => $id,
+            'estado' => 'aceptado'
+        ]);
+
+        if (!$amistad) {
+            $amistad = $entityManager->getRepository(Amistad::class)->findOneBy([
+                'usuario_a_id' => $id,
+                'usuario_b_id' => $usuarioActual->getId(),
+                'estado' => 'aceptado'
+            ]);
+        }
+
+        if (!$amistad) {
+            return $this->redirectToRoute('ver_perfil', ['id' => $id]);
+        }
+
+        // Eliminar la relación de amistad
+        $entityManager->remove($amistad);
+        $entityManager->flush();
+
+        // Redirigir al perfil del usuario después de eliminar la amistad
+        return $this->redirectToRoute('inicio');
     }
 }
