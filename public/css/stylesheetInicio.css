@@ -35,4 +35,99 @@
     color: white;
     transform: scale(1.05);
 }
+.posts-list {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
+.posts-list h2 {
+    color: #ffac4c;
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.posts-list .post {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 2px solid #1a3a63;
+}
+
+.posts-list .post:hover {
+    transform: translateY(-5px);
+}
+
+.posts-list .post p {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.posts-list .post small {
+    color: #777;
+    display: block;
+    margin-bottom: 10px;
+    font-size: 12px;
+}
+
+.posts-list .post a {
+    display: inline-block;
+    background-color: #99e7ff;
+    color: #333;
+    padding: 8px 15px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.posts-list .post a:hover {
+    background-color: #dea1ff;
+    color: white;
+}
+
+@media (max-width: 600px) {
+    .posts-list {
+        padding: 10px;
+    }
+
+    .posts-list .post {
+        padding: 10px;
+    }
+}
+.main-content h2 {
+    color: #1a3a63;
+    /* Color azul oscuro para contrastar */
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #99e7ff;
+    /* Línea decorativa debajo del título */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.main-content h2::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background-color: #dea1ff;
+    /* Color lila para un toque de contraste */
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+}

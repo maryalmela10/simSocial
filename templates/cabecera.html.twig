@@ -16,14 +16,17 @@
         </div>
         <span>¡Hola, {{ app.user.nombre }}!</span>
     </div>
+    
 
     <nav class="nav-links">
+     <a href="{{ path('miPerfil',{'id_usuario': app.user.id}) }}" class="perfil"> 🧑🏻‍💻Mi perfil</a>
         <a href="{{ path('inicio') }}" class="nav-link">
             🏠 Inicio
         </a>
         <a href="{{ path('ctrl_logout') }}" class="nav-link">
             🚪 Cerrar sesión
         </a>
+
     </nav>
 </header>
     </body>
