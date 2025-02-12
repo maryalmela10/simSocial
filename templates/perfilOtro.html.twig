@@ -25,17 +25,40 @@
     {% elseif amistad and amistad.estado == 'pendiente' %}
           <div class="solicitud-amistad">
             <p>Tienes una solicitud de amistad pendiente con este usuario.</p>
+            {% if enviado_para_actual %}
+                <button onclick="gestionarSolicitudAmistad({{ usuario.id }}, 'aceptar')">Aceptar</button>
+                <button onclick="gestionarSolicitudAmistad({{ usuario.id }}, 'rechazar')">Rechazar</button>
+            {% endif %}
         </div>
     {% else %}
         <div class="solicitud-amistad">
             <p>No tienes acceso al perfil completo de este usuario.</p>
             <button onclick="enviarSolicitudAmistad({{ usuario.id }})">Enviar solicitud de amistad</button>
         </div>
-        <div id="mensaje-solicitud" style="display: none;"></div>
 {% endif %}
+    <div id="mensaje-solicitud" style="display: none;"></div>
 {% endblock %}
 {% block javascripts %}
     <script>
+          function gestionarSolicitudAmistad(usuarioAmigo, accion) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                var respuesta = JSON.parse(this.responseText);
+                var mensajeDiv = document.getElementById("mensaje-solicitud");
+                mensajeDiv.innerHTML = respuesta.message;
+                mensajeDiv.style.display = "block"; 
+                }
+            };
+            xhttp.open("POST", "/gestionar-solicitud-amistad", true);
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+            xhttp.send(JSON.stringify({ 
+                usuarioAmigo: usuarioAmigo,
+                accion: accion 
+            }));
+        }
+
         function enviarSolicitudAmistad(idUsuario) {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
@@ -44,9 +67,6 @@
                 var mensajeDiv = document.getElementById("mensaje-solicitud");
                 mensajeDiv.innerHTML = respuesta.message;
                 mensajeDiv.style.display = "block";
-                setTimeout(function() {
-                    location.reload();
-                }, 2000); // Recarga la página después de 2 segundos
             }
         };
         xhttp.open("POST", "/solicitud-amistad/" + idUsuario, true);

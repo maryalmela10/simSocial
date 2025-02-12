@@ -73,11 +73,17 @@ class UsuarioController extends AbstractController
             ]);
         }
 
+        $enviado_para_actual = false;
+        if ($amistad) {
+            $enviado_para_actual = $amistad->getUsuario_b_id() === $this->getUser()->getId();
+        }
+        
          $posts = $usuario->getPosts();
  
          return $this->render("perfilOtro.html.twig", [
              'amistad' => $amistad,
              'posts' => $posts,
+             'enviado_para_actual' => $enviado_para_actual,
              'usuario' => $usuario
          ]);
     }
@@ -156,5 +162,49 @@ class UsuarioController extends AbstractController
         }, $usuarios);
 
         return new JsonResponse($resultados);
+    }
+
+    #[Route('/gestionar-solicitud-amistad', name: 'gestionar_solicitud_amistad', methods: ['POST'])]
+    public function gestionarSolicitudAmistad(Request $request, EntityManagerInterface $entityManager)
+    {
+        // Decodificar el contenido JSON enviado desde el frontend
+        $data = json_decode($request->getContent(), true);
+
+        $usuarioAmigoId = $data['usuarioAmigo'];
+        $accion = $data['accion'];
+
+        // Obtener al usuario actual (el que está logueado)
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual) {
+            return new JsonResponse(['message' => 'Usuario no autenticado']);
+        }
+
+        // Buscar la relación de amistad entre el usuario actual y el usuario amigo
+        $amistad = $this->entityManager->getRepository(Amistad::class)->findOneBy([
+            'usuario_a_id' => $usuarioAmigoId,
+            'usuario_b_id' => $usuarioActual->getId(),
+            'estado' => 'pendiente',
+        ]);
+
+        if (!$amistad) {
+            return new JsonResponse(['message' => 'Solicitud de amistad no encontrada o ya gestionada']);
+        }
+
+        // Gestionar la acción (aceptar o rechazar)
+        if ($accion === 'aceptar') {
+            $amistad->setEstado('aceptado');
+            $mensaje = 'Solicitud de amistad aceptada';
+        } elseif ($accion === 'rechazar') {
+            $amistad->setEstado('rechazado');
+            $mensaje = 'Solicitud de amistad rechazada';
+        } else {
+            return new JsonResponse(['message' => 'Acción no válida']);
+        }
+
+        // Guardar los cambios en la base de datos
+        $entityManager->persist($amistad);
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => $mensaje]);
     }
 }
