@@ -10,6 +10,7 @@ use App\Entity\Usuario;
 use App\Entity\Post;
 use App\Entity\Comentario;
 use App\Entity\Reaccion;
+use App\Entity\Amistad;
 use App\Entity\PedidoProducto;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
@@ -31,9 +32,34 @@ class PedidosBase extends AbstractController
     {
         $usuarioActual = $this->getUser();
 
-        // Obtener todos los posts, ordenados por fecha de publicación descendente
+        // Obtener los IDs de los amigos aceptados
+        $amigosIds = $entityManager->createQueryBuilder()
+            ->select('CASE 
+            WHEN a.usuario_a_id = :userId THEN a.usuario_b_id 
+            ELSE a.usuario_a_id 
+        END')
+            ->from(Amistad::class, 'a')
+            ->where('(a.usuario_a_id = :userId OR a.usuario_b_id = :userId)')
+            ->andWhere('a.estado = :estado')
+            ->setParameter('userId', $usuarioActual->getId())
+            ->setParameter('estado', 'aceptado')
+            ->getQuery()
+            ->getResult();
+
+        $amigosIds = array_column($amigosIds, 1);
+
+        // Añadir el ID del usuario actual para incluir sus propios posts
+        $amigosIds[] = $usuarioActual->getId();
+
+        // Obtener los posts de los amigos aceptados y del usuario actual
         $posts = $entityManager->getRepository(Post::class)
-            ->findBy([], ['fecha_publicacion' => 'DESC'], 10);
+            ->createQueryBuilder('p')
+            ->where('p.usuario IN (:amigos)')
+            ->setParameter('amigos', $amigosIds)
+            ->orderBy('p.fecha_publicacion', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
 
         $usuarios = $entityManager->getRepository(Usuario::class)
             ->createQueryBuilder('u')
@@ -41,6 +67,7 @@ class PedidosBase extends AbstractController
             ->setParameter('usuarioActual', $usuarioActual)
             ->getQuery()
             ->getResult();
+
         dump($posts);
 
         return $this->render("inicio.html.twig", [
@@ -48,6 +75,7 @@ class PedidosBase extends AbstractController
             'usuarios' => $usuarios
         ]);
     }
+
 
 
     #[Route('/miPerfil/{id_usuario}', name: 'miPerfil')]

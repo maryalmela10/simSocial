@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Amistad;
+use App\Entity\Post;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,21 +28,49 @@ class UsuarioController extends AbstractController
     public function inicio(): Response
     {
         $usuarioActual = $this->getUser();
-        $todosUsuarios = $this->entityManager->getRepository(Usuario::class)->findAll();
 
-        $usuarios = array_filter($todosUsuarios, function ($usuario) use ($usuarioActual) {
-            return $usuario !== $usuarioActual;
-        });
+        // Obtener usuarios excepto el actual directamente de la base de datos
+        $usuarios = $this->entityManager->getRepository(Usuario::class)
+            ->createQueryBuilder('u')
+            ->where('u != :usuarioActual')
+            ->setParameter('usuarioActual', $usuarioActual)
+            ->getQuery()
+            ->getResult();
 
-        // Obtener los posts
-        $posts = $this->entityManager->getRepository(\App\Entity\Post::class)
-            ->findBy([], ['fecha_publicacion' => 'DESC'], 10);
+        // Obtener los IDs de los amigos aceptados
+        $amigosIds = $this->entityManager->createQueryBuilder()
+            ->select('CASE 
+            WHEN a.usuario_a_id = :userId THEN a.usuario_b_id 
+            ELSE a.usuario_a_id 
+        END')
+            ->from(Amistad::class, 'a')
+            ->where('(a.usuario_a_id = :userId OR a.usuario_b_id = :userId)')
+            ->andWhere('a.estado = :estado')
+            ->setParameter('userId', $usuarioActual->getId())
+            ->setParameter('estado', 'aceptado')
+            ->getQuery()
+            ->getResult();
+
+        $amigosIds = array_column($amigosIds, 1);
+        $amigosIds[] = $usuarioActual->getId(); // Incluir posts del usuario actual
+
+        // Obtener los posts de los amigos aceptados y del usuario actual
+        $posts = $this->entityManager->getRepository(Post::class)
+            ->createQueryBuilder('p')
+            ->where('p.usuario IN (:amigos)')
+            ->setParameter('amigos', $amigosIds)
+            ->orderBy('p.fecha_publicacion', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
 
         return $this->render('inicio.html.twig', [
             'usuarios' => $usuarios,
             'posts' => $posts,
         ]);
     }
+
+
 
 
     #[Route('/usuario/{id}', name: 'ver_perfil')]
