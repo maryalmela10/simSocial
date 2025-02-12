@@ -22,6 +22,10 @@ CREATE TABLE posts (
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
+-- Columnas de likes en post
+ALTER TABLE posts ADD COLUMN likes INT DEFAULT 0;
+ALTER TABLE posts ADD COLUMN dislikes INT DEFAULT 0;
+
 -- Tabla de comentarios
 CREATE TABLE comentarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -44,7 +48,7 @@ CREATE TABLE amistades (
     FOREIGN KEY (usuario_b_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
--- Tabla para almacenar la foto de perfil (si un usuario tiene foto)
+-- Tabla para almacenar la foto de perfil
 CREATE TABLE fotos_perfil (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
@@ -53,15 +57,7 @@ CREATE TABLE fotos_perfil (
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
--- Insertar un usuario regular
-INSERT INTO usuarios (clave, nombre, apellido, email)
-VALUES ('1234', 'pablo', 'pozo', 'pablo@email.com');
-
--- Insertar un usuario administrador
-INSERT INTO usuarios (clave, rol, nombre, apellido, email)
-VALUES ('1234', 'ROLE_ADMIN', 'mary', 'almela', 'mary@email.com');
-
--- Tabla para almacenar la foto de perfil (si un usuario tiene foto)
+-- Tabla para almacenar las reacciones
 CREATE TABLE reacciones (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
@@ -69,5 +65,30 @@ CREATE TABLE reacciones (
     tipo ENUM('me_gusta', 'me_divierte') NOT NULL,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
     FOREIGN KEY (post_id) REFERENCES posts(id),
-    UNIQUE (usuario_id, post_id, tipo) -- Evita que un usuario reaccione dos veces con el mismo tipo
+    UNIQUE (usuario_id, post_id, tipo)
 );
+
+-- Insertar usuarios
+INSERT INTO usuarios (clave, nombre, apellido, email)
+VALUES ('1234', 'pablo', 'pozo', 'pablo@email.com');
+
+INSERT INTO usuarios (clave, rol, nombre, apellido, email)
+VALUES ('1234', 'ROLE_ADMIN', 'mary', 'almela', 'mary@email.com');
+
+INSERT INTO usuarios (clave, nombre, apellido, email)
+VALUES ('1234', 'lucas', 'fernandez', 'lucas@email.com');
+
+-- Insertar posts
+INSERT INTO posts (contenido, usuario_id) VALUES ('Este es mi primer post!', 1);
+INSERT INTO posts (contenido, usuario_id) VALUES ('Hola a todos, este es un nuevo post.', 2);
+INSERT INTO posts (contenido, usuario_id) VALUES ('Me encanta esta red social!', 3);
+
+-- Insertar comentarios
+INSERT INTO comentarios (contenido, post_id, usuario_id) VALUES ('¡Muy buen post!', 1, 2);
+INSERT INTO comentarios (contenido, post_id, usuario_id) VALUES ('Me gusta tu opinión.', 2, 3);
+INSERT INTO comentarios (contenido, post_id, usuario_id) VALUES ('Interesante perspectiva.', 3, 1);
+
+-- Insertar reacciones
+INSERT INTO reacciones (usuario_id, post_id, tipo) VALUES (1, 2, 'me_gusta');
+INSERT INTO reacciones (usuario_id, post_id, tipo) VALUES (2, 3, 'me_divierte');
+INSERT INTO reacciones (usuario_id, post_id, tipo) VALUES (3, 1, 'me_gusta');
