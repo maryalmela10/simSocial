@@ -5,13 +5,23 @@ USE red_social;
 -- Tabla de usuarios (modificada)
 CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    clave VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     rol VARCHAR(50) DEFAULT 'ROLE_USER',
     nombre VARCHAR(100) NOT NULL,
     apellido VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE usuarios
+ADD COLUMN fecha_nacimiento DATE,
+ADD COLUMN localidad VARCHAR(100),
+ADD COLUMN biografia TEXT,
+ADD COLUMN activacion_token VARCHAR(255),
+ADD COLUMN verificado BOOLEAN DEFAULT FALSE;
+
+-- -- Renombrar la columna 'clave' a 'password'
+-- ALTER TABLE usuarios CHANGE COLUMN clave password VARCHAR(255) NOT NULL;
 
 -- Tabla de posts
 CREATE TABLE posts (
@@ -69,13 +79,13 @@ CREATE TABLE reacciones (
 );
 
 -- Insertar usuarios
-INSERT INTO usuarios (clave, nombre, apellido, email)
+INSERT INTO usuarios (password, nombre, apellido, email)
 VALUES ('1234', 'pablo', 'pozo', 'pablo@email.com');
 
-INSERT INTO usuarios (clave, rol, nombre, apellido, email)
+INSERT INTO usuarios (password, rol, nombre, apellido, email)
 VALUES ('1234', 'ROLE_ADMIN', 'mary', 'almela', 'mary@email.com');
 
-INSERT INTO usuarios (clave, nombre, apellido, email)
+INSERT INTO usuarios (password, nombre, apellido, email)
 VALUES ('1234', 'lucas', 'fernandez', 'lucas@email.com');
 
 -- Insertar posts
