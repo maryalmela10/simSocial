@@ -29,12 +29,14 @@ CREATE TABLE posts (
     contenido TEXT NOT NULL,
     fecha_publicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     usuario_id INT NOT NULL,
+    likes int DEFAULT 0,
+    dislikes int DEFAULT 0
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
--- Columnas de likes en post
-ALTER TABLE posts ADD COLUMN likes INT DEFAULT 0;
-ALTER TABLE posts ADD COLUMN dislikes INT DEFAULT 0;
+-- -- Columnas de likes en post
+-- ALTER TABLE posts ADD COLUMN likes INT DEFAULT 0;
+-- ALTER TABLE posts ADD COLUMN dislikes INT DEFAULT 0;
 
 -- Tabla de comentarios
 CREATE TABLE comentarios (
@@ -77,6 +79,15 @@ CREATE TABLE reacciones (
     FOREIGN KEY (post_id) REFERENCES posts(id),
     UNIQUE (usuario_id, post_id, tipo)
 );
+
+-- Tabla para almacenar las fotos de post
+    CREATE TABLE foto_post (
+    id int AUTO_INCREMENT PRIMARY KEY,
+    post_id  int NOT NULL,
+    urlImagen  varchar(255) NOT NULL
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+    );
+
 
 -- Insertar usuarios
 INSERT INTO usuarios (password, nombre, apellido, email)

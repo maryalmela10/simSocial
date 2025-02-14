@@ -53,9 +53,8 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OrderBy(['fecha_publicacion' => 'DESC'])]
 	private $posts;
 
-    // public function __construct() {
-    //     $this->posts = new ArrayCollection();
-    // }
+    #[ORM\OneToOne(targetEntity: FotosPerfil::class, mappedBy: "usuario", cascade: ["persist", "remove"])]
+    private ?FotosPerfil $fotoPerfil = null;
     
     public function getPosts() {
         return $this->posts;    
@@ -188,6 +187,17 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     {
 
     }
+    
+    public function getFotoPerfil(): ?FotosPerfil {
+        return $this->fotoPerfil;
+    }
+    
+    public function setFotoPerfil(?FotosPerfil $fotoPerfil):self
+    {
+        $this->fotoPerfil = $fotoPerfil;
+        return $this;
+
+    }
 
     public function __construct($email = null, $password = null, $nombre = null, $apellido = null, ?\DateTime $fecha_registro = null, $rol = null, ?\DateTime $fecha_nacimiento = null,
                                 $localidad = null, $biografia = null, $activacion_token = null, $verificado = false) 
@@ -205,5 +215,6 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         $this->verificado = $verificado;
         $this->posts = new ArrayCollection();
     }
+
     
 }

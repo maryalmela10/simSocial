@@ -12,6 +12,10 @@ use App\Entity\Comentario;
 use App\Entity\Reaccion;
 use App\Entity\Amistad;
 use App\Entity\PedidoProducto;
+use App\Entity\FotosPerfil;
+use App\Entity\FotoPost;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Address;
@@ -101,33 +105,88 @@ class PedidosBase extends AbstractController
         if (!$usuario) {
             throw $this->createNotFoundException('Usuario no encontrado');
         }
+        //foto de perfil
+        $fotoPerfil = $entityManager->getRepository(FotosPerfil::class)->findOneBy(['usuario' => $usuario]);
+        $posts = $usuario->getPosts();
 
-        // Crear un nuevo post si se envió el formulario
+        // Iterar sobre los posts para cargar las fotos asociadas
+        foreach ($posts as $post) {
+            $post->comentariosCount = count($post->getComentarios());
+    
+            // Asegurarse de que la foto del post esté cargada (Doctrine lo maneja automáticamente)
+            $fotoPost = $post->getFotoPost();
+        }
+    
+        // Procesar el formulario de crear un nuevo post
         if ($request->isMethod('POST')) {
             $contenido = $request->request->get('contenido');
+    
             if ($contenido) {
                 $post = new Post();
                 $post->setContenido($contenido);
                 $post->setFecha_publicacion(new \DateTime());
                 $post->setUsuario($usuario);
-
+    
+                if ($foto = $request->files->get('foto_post')) {
+                    $fotoNombre = uniqid() . '.' . $foto->guessExtension();
+                    $foto->move($this->getParameter('uploads_directory'), $fotoNombre);
+    
+                    // Crear la entidad FotoPost
+                    $fotoPost = new FotoPost();
+                    $fotoPost->setUrlImagen($fotoNombre);
+                    $fotoPost->setPost($post); // Relacionar la foto con el post
+    
+                    // Persistir la entidad FotoPostfotos
+                    $entityManager->persist($fotoPost);
+                }
+    
+                // Persistir el post
                 $entityManager->persist($post);
                 $entityManager->flush();
-
+    
                 $this->addFlash('success', 'Post creado exitosamente.');
                 return $this->redirectToRoute('miPerfil', ['id_usuario' => $id_usuario]);
             }
         }
 
-        $posts = $usuario->getPosts();
-        // Añadir cantidad de comentarios a cada post
-        foreach ($posts as $post) {
-            $post->comentariosCount = count($post->getComentarios());
-        }
-
+        //la chicha de fotos de perfil para subir,cambiar o eliminarla
+            if ($file = $request->files->get('foto_perfil')) {
+                $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/uploads/fotos_perfil/';
+                $filesystem = new Filesystem();
+                $nombreArchivo = uniqid() . '.' . $file->guessExtension();
+                $file->move($uploadsDir, $nombreArchivo);
+                
+                if ($fotoPerfil) {
+                    $filesystem->remove($uploadsDir . $fotoPerfil->getUrlImagen());
+                    $fotoPerfil->setUrlImagen($nombreArchivo);
+                } else {
+                    $fotoPerfil = new FotosPerfil();
+                    $fotoPerfil->setUsuario($usuario);
+                    $fotoPerfil->setUrlImagen($nombreArchivo);
+                    $entityManager->persist($fotoPerfil);
+                }
+                
+                $entityManager->flush();
+                $this->addFlash('success', 'Foto de perfil actualizada.');
+                return $this->redirectToRoute('miPerfil', ['id_usuario' => $id_usuario]);
+            }
+        //eliminar foto
+            if ($request->request->has('eliminar_foto') && $fotoPerfil) {
+                $filesystem = new Filesystem();
+                $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/uploads/fotos_perfil/';
+                $filesystem->remove($uploadsDir . $fotoPerfil->getUrlImagen());
+                
+                $entityManager->remove($fotoPerfil);
+                $entityManager->flush();
+                $this->addFlash('success', 'Foto de perfil eliminada.');
+                return $this->redirectToRoute('miPerfil', ['id_usuario' => $id_usuario]);
+            }
+        
+        // Luego, pasas los datos a la plantilla
         return $this->render("perfil.html.twig", [
             'posts' => $posts,
-            'usuario' => $usuario,  // Añadimos esta línea para pasar el usuario a la plantilla
+            'usuario' => $usuario,
+            'fotoPerfil' => $fotoPerfil 
         ]);
     }
 

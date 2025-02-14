@@ -34,9 +34,13 @@ class Post
     #[ORM\Column(type:'integer', name:'dislikes', options:["default" => 0])]
     private int $dislikes = 0;
 
+    #[ORM\OneToOne(mappedBy: 'post', targetEntity: FotoPost::class, cascade: ['persist', 'remove'])]
+    private ?FotoPost $fotoPost = null;    
+
     public function __construct(){
         $this->comentarios = new ArrayCollection();
         $this->reacciones = new ArrayCollection();
+        $this->fotos = new ArrayCollection();
     }
 
     public function getComentarios(){
@@ -100,4 +104,25 @@ class Post
     public function addDislike(): void {
         $this->dislikes++;
     }
+
+    public function getFotoPost(): ?FotoPost
+    {
+        return $this->fotoPost;
+    }
+
+    public function setFotoPost(FotoPost $fotoPost): self
+    {
+        $this->fotoPost = $fotoPost;
+        $fotoPost->setPost($this); // Asociar la foto con el post
+        return $this;
+    }
+    
+    public function removeFotoPost(): self
+    {
+        if ($this->fotoPost) {
+            $this->fotoPost = null;
+        }
+        return $this;
+    }
+    
 }
