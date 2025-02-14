@@ -30,7 +30,7 @@ CREATE TABLE posts (
     fecha_publicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     usuario_id INT NOT NULL,
     likes int DEFAULT 0,
-    dislikes int DEFAULT 0
+    dislikes int DEFAULT 0,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
@@ -84,9 +84,9 @@ CREATE TABLE reacciones (
     CREATE TABLE foto_post (
     id int AUTO_INCREMENT PRIMARY KEY,
     post_id  int NOT NULL,
-    urlImagen  varchar(255) NOT NULL
+    urlImagen  varchar(255) NOT NULL,
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
-    );
+);
 
 
 -- Insertar usuarios
