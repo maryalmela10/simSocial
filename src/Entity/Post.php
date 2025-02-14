@@ -35,7 +35,7 @@ class Post
     private int $dislikes = 0;
 
     #[ORM\OneToOne(mappedBy: 'post', targetEntity: FotoPost::class, cascade: ['persist', 'remove'])]
-    private ?FotoPost $fotoPost = null;    
+    private ?FotoPost $fotoPost = null;        
 
     public function __construct(){
         $this->comentarios = new ArrayCollection();

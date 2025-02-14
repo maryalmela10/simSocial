@@ -79,7 +79,7 @@ class Registros extends AbstractController
         }
 
         $usuario->setVerificado(true);
-        $usuario->setActivacionToken(null);
+        $usuario->setActivacion_token(null);
         $entityManager->flush();
 
         $this->addFlash('success', 'Tu cuenta ha sido activada. Ya puedes iniciar sesión.');

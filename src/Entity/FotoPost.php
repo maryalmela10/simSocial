@@ -13,9 +13,10 @@ class FotoPost
     #[ORM\Column(type: "integer")]
     private int $id;
 
-    #[ORM\ManyToOne(targetEntity: 'Post', inversedBy: 'fotoPost')]
+    
+    #[ORM\OneToOne(inversedBy: 'fotoPost', targetEntity: Post::class)]
     #[ORM\JoinColumn(name: 'post_id', referencedColumnName: 'id', nullable: false)]
-    private $post;
+    private ?Post $post = null;
 
     #[ORM\Column(name: "urlImagen", type: "string", length: 255)]
     private string $urlImagen;
