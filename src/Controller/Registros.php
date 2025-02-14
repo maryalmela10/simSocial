@@ -2,26 +2,15 @@
 namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Usuario;
-use App\Entity\Post;
-use App\Entity\Comentario;
-use App\Entity\Reaccion;
-use App\Entity\Amistad;
-use App\Entity\PedidoProducto;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Form\RegistroType;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class Registros extends AbstractController
 {
@@ -37,14 +26,64 @@ class Registros extends AbstractController
     #[Route('/registrarse', name: 'registroUsuario')]
     public function registrar(Request $request)
     {
-       $usuarioNuevo = new Usuario();
-       $form = $this->createForm(type: RegistroType::class, data: $usuarioNuevo);
-       $form->handleRequest($request);
-       if($form->isSubmitted() && $form->isValid()){
-        $entityManager->persist($usuarioNuevo);
+       return $this->render('registrarse.html.twig');
+    }
+
+    #[Route('/gestionarRegistro', name: 'gestionar_registro', methods: ['POST'])]
+    public function gestionarRegistro(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, MailerInterface $mailer)
+    {
+        $nombre = $request->request->get('nombre');
+        $apellido = $request->request->get('apellido');
+        $email = $request->request->get('correo');
+        $contrasena = $request->request->get('contrasena');
+        $verificarContrasena = $request->request->get('verificar_contrasena');
+        $fechaNacimiento = $request->request->get('fecha_nacimiento');
+
+        // Crear nuevo usuario
+        $usuario = new Usuario();
+        $usuario->setNombre($nombre);
+        $usuario->setApellido($apellido);
+        $usuario->setEmail($email);
+        $usuario->setPassword($passwordHasher->hashPassword($usuario, $contrasena));
+        $usuario->setFecha_registro(new \DateTime());
+        $usuario->setRol('ROLE_USER');
+        if ($fechaNacimiento) {
+            $usuario->setFechaNacimiento(new \DateTime($fechaNacimiento));
+        }
+        
+        // Generar token de activación
+        $token = bin2hex(random_bytes(32));
+        $usuario->setActivacion_token($token);
+
+        // Guardar usuario
+        $entityManager->persist($usuario);
         $entityManager->flush();
-        return $this->redirectToRoute('registroUsuario');
-       }
-       return $this->render('registrarse.html.twig', ['form'=> $form->createView()]);
+
+        $correo = new Email();
+        $correo->from(new Address('noreply@simsocial.com', 'Sistema de registros'));
+        $correo->to(new Address($request->request->get('correo')));
+		$correo->subject("Activa tu cuenta");
+        $correo->html($this->renderView('activacion.html.twig', ['token' => $token]));
+        $mailer->send($correo);
+
+        return $this->render('registroPendiente.html.twig');
+    }
+
+    #[Route('/activar/{token}', name: 'activar_cuenta')]
+    public function activarCuenta(string $token, EntityManagerInterface $entityManager)
+    {
+        $usuario = $entityManager->getRepository(Usuario::class)->findOneBy(['activacion_token' => $token]);
+
+        if (!$usuario) {
+            throw $this->createNotFoundException('Token de activación inválido.');
+        }
+
+        $usuario->setVerificado(true);
+        $usuario->setActivacionToken(null);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Tu cuenta ha sido activada. Ya puedes iniciar sesión.');
+
+        return $this->redirectToRoute('login');
     }
 }

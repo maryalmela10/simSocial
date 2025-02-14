@@ -1,6 +1,172 @@
-{% block title %}Holaaaa{% endblock %}
 {% block stylesheets %}
+    <link href="{{ asset('css/stylesheetRegistro.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
+
 {% block contenido %}
-{{form(form)}}
+<div class="container">
+    <div class="main-content">
+        <h2>Registro de Usuario</h2>
+        <div class="form-container">
+            <form id="registroForm" action="gestionarRegistro" method="POST">
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" id="apellido" name="apellido" required>
+                </div>
+                <div class="form-group">
+                    <label for="correo">Correo Electrónico</label>
+                    <input type="email" id="correo" name="correo" required>
+                </div>
+                <div class="form-group">
+                    <label for="contrasena">Contraseña</label>
+                    <input type="password" id="contrasena" name="contrasena" required>
+                </div>
+                <div class="form-group">
+                    <label for="verificar_contrasena">Confirmar Contraseña</label>
+                    <input type="password" id="verificar_contrasena" name="verificar_contrasena" required>
+                </div>
+                <div class="form-group">
+                    <label for="fecha_nacimiento">Fecha de Nacimiento*</label>
+                    <input type="date" id="fecha_nacimiento" name="fecha_nacimiento">
+                </div>
+                <button type="submit" class="submit-btn">Registrarse</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('registroForm');
+    const campos = ['nombre', 'apellido', 'correo', 'contrasena', 'verificar_contrasena', 'fecha_nacimiento'];
+
+    function mostrarError(campo, mensaje) {
+        const formulario = campo.parentElement;
+        let elementoError = formulario.querySelector('.error-message');
+        
+        if (!elementoError) {
+            elementoError = document.createElement('div');
+            elementoError.className = 'error-message';
+            formulario.appendChild(elementoError);
+        }
+        
+        elementoError.textContent = mensaje;
+        elementoError.style.color = 'red';
+        elementoError.style.fontSize = '0.8em';
+        elementoError.style.marginTop = '5px';
+    }
+
+    function limpiarError(campo) {
+        const formulario = campo.parentElement;
+        const elementoError = formulario.querySelector('.error-message');
+        if (elementoError) {
+            elementoError.remove();
+        }
+    }
+
+    function validarCampo(campo) {
+        if (campo.required && campo.value.trim() === '') {
+            mostrarError(campo, 'Este campo es obligatorio');
+            return false;
+        }
+
+        if (campo.id === 'correo') {
+            const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
+            if (!emailRegex.test(campo.value)) {
+                mostrarError(campo, 'Por favor, introduce un correo electrónico válido');
+                return false;
+            }
+        }
+
+        if (campo.id === 'contrasena') {
+            const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+            if (!passwordRegex.test(campo.value)) {
+                mostrarError(campo, 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número');
+                return false;
+            }
+        }
+
+        if (campo.id === 'verificar_contrasena') {
+            const contrasena = document.getElementById('contrasena');
+            if (campo.value !== contrasena.value) {
+                mostrarError(campo, 'Las contraseñas no coinciden');
+                return false;
+            }
+        }
+
+        if (campo.id === 'fecha_nacimiento') {
+    
+            if (!campo.value) {
+                return true; // Si no es obligatorio, no mostrar error
+            }
+
+            const fechaNacimiento = new Date(campo.value);
+            const hoy = new Date();
+
+            // Validar formato de fecha
+            const fechaRegex = /^\d{4}-\d{2}-\d{2}$/;
+            if (!fechaRegex.test(campo.value)) {
+                mostrarError(campo, 'El formato de fecha debe ser AAAA-MM-DD');
+                return false;
+            }
+
+            // Validar que la fecha no sea futura
+            if (fechaNacimiento > hoy) {
+                mostrarError(campo, 'La fecha de nacimiento no puede ser en el futuro');
+                return false;
+            }
+
+            // Calcular edad
+            let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+            const mesActual = hoy.getMonth();
+            const diaActual = hoy.getDate();
+            const mesNacimiento = fechaNacimiento.getMonth();
+            const diaNacimiento = fechaNacimiento.getDate();
+
+            // Ajustar edad si el cumpleaños no ha llegado este año
+            if (mesActual < mesNacimiento || (mesActual === mesNacimiento && diaActual < diaNacimiento)) {
+                edad--;
+            }
+
+            // Validar edad mínima 
+            if (edad < 18) {
+                mostrarError(campo, 'Debes ser mayor de 18 años para registrarte');
+                return false;
+            }
+
+            // Validar edad máxima 
+            if (edad > 120) {
+                mostrarError(campo, 'La fecha de nacimiento parece incorrecta');
+                return false;
+            }
+        }
+
+        limpiarError(campo);
+        return true;
+    }
+
+    campos.forEach(campoId => {
+        const campo = document.getElementById(campoId);
+        campo.addEventListener('blur', () => validarCampo(campo));
+    });
+
+    form.addEventListener('submit', function(event) {
+        let formValido = true;
+        campos.forEach(campoId => {
+            const campo = document.getElementById(campoId);
+            if (!validarCampo(campo)) {
+                formValido = false;
+            }
+        });
+
+        if (!formValido) {
+            event.preventDefault();
+        }
+    });
+});
+</script>
 {% endblock %}
