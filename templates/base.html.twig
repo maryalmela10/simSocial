@@ -19,5 +19,24 @@
         {% endblock %}
     </body>
     {% block javascripts %}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const modoActual = localStorage.getItem('modo') || 'claro';
+    
+    if (modoActual === 'oscuro') {
+        document.body.classList.add('modo-oscuro');
+    }
+
+    // Busca el botón de cambiar modo si existe en la página actual
+    const botonCambiarModo = document.getElementById('cambiarModo');
+    if (botonCambiarModo) {
+        botonCambiarModo.addEventListener('click', function() {
+            document.body.classList.toggle('modo-oscuro');
+            const nuevoModo = document.body.classList.contains('modo-oscuro') ? 'oscuro' : 'claro';
+            localStorage.setItem('modo', nuevoModo);
+        });
+    }
+});
+    </script>
     {% endblock %}
 </html>

@@ -30,7 +30,7 @@ class Registros extends AbstractController
     }
 
     #[Route('/gestionarRegistro', name: 'gestionar_registro', methods: ['POST'])]
-    public function gestionarRegistro(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, MailerInterface $mailer)
+    public function gestionarRegistro(Request $request, UserPasswordHasherInterface $hasheador, EntityManagerInterface $entityManager, MailerInterface $mailer)
     {
         $nombre = $request->request->get('nombre');
         $apellido = $request->request->get('apellido');
@@ -50,7 +50,8 @@ class Registros extends AbstractController
         $usuario->setNombre($nombre);
         $usuario->setApellido($apellido);
         $usuario->setEmail($email);
-        $usuario->setPassword($passwordHasher->hashPassword($usuario, $contrasena));
+        $contrasenaHasheada = $hasheador->hashPassword($usuario, $contrasena);
+        $usuario->setPassword($contrasenaHasheada);
         $usuario->setFecha_registro(new \DateTime());
         $usuario->setRol('ROLE_USER');
         if ($fechaNacimiento) {

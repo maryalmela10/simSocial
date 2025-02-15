@@ -6,7 +6,7 @@ security:
                 property: email
     password_hashers:
         App\Entity\Usuario:
-            algorithm: plaintext
+            algorithm: auto
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
