@@ -1,25 +1,24 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Perfil de {{ app.user.nombre }}{% endblock %}
 {% block stylesheets %}
- {{ parent() }}
-<link href="{{ asset('css/stylesheetPerfil.css') }}" rel="stylesheet" type="text/css">
+    {{ parent() }}
+    <link href="{{ asset('css/stylesheetPerfil.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
+
 {% block contenido %}
 <div class="profile-container">
     <h2>Mi Perfil</h2>
     <div class="profile-info">
-    
         <!-- Mostrar la foto de perfil -->
         <img src="{{ fotoPerfil ? asset('uploads/fotos_perfil/' ~ fotoPerfil.urlImagen) : 'https://via.placeholder.com/150' }}" 
             alt="Foto de perfil" class="profile-avatar"> 
-    
+    {% if app.user.id == usuario.id %}        
         {# <!-- Formulario para subir una nueva foto de perfil --> #}
         <form action="{{ path('miPerfil', {'id_usuario': usuario.id}) }}" method="post" enctype="multipart/form-data">
-            <input type="file" name="foto_perfil" accept="image/*" required>
+            <label for="foto_perfil" class="file-label">Seleccionar Archivo</label>
+            <input type="file" id="foto_perfil" name="foto_perfil" accept="image/*" required>
             <button type="submit">Actualizar Foto</button>
         </form>
-
         <!--Boton para eliminar la fotis-->
         {% if fotoPerfil %}
             <form action="{{ path('miPerfil', {'id_usuario': usuario.id}) }}" method="post">
@@ -27,21 +26,21 @@
                 <button type="submit">Eliminar Foto</button>
             </form>
         {% endif %}
-
+    {% endif %}    
         <h3>{{ app.user.nombre|capitalize }} {{ app.user.apellido|capitalize }}</h3>
         <p>Email: {{ app.user.email }}</p>
         <p>Registrado: {{ app.user.fecha_registro|date("d/m/Y") }}</p>
     </div>
     
-    {% if app.user.id == usuario.id %}
+    {% if app.user.id == usuario.id %} 
         <!-- Formulario para crear nuevo post (solo visible en el perfil propio) -->
         <form method="POST" action="{{ path('miPerfil', {'id_usuario': usuario.id}) }}" enctype="multipart/form-data" class="new-post-form">
             <textarea name="contenido" placeholder="¿Qué estás pensando?"></textarea>
-            <input type="file" name="foto_post" accept="image/*">
+            <label for="foto_post" class="file-label">Seleccionar Archivo</label>
+            <input type="file" id="foto_post" name="foto_post" accept="image/*">
             <button type="submit">Publicar</button>
         </form>
     {% endif %}
-
 
     <!-- Lista de posts propios -->
     <div class="posts-list">
@@ -51,16 +50,12 @@
             <small>
                 Publicado el {{ post.fecha_publicacion|date("d/m/Y") }} a las {{ post.fecha_publicacion|date("H:i") }} - Comentarios: {{ post.comentariosCount }}
             </small>
-
             {% if post.getFotoPost() %}
-                    <img src="{{ asset('uploads/foto_post/' ~ post.getFotoPost().getUrlImagen()) }}" alt="Foto del post">
-                </div>
+                <img src="{{ asset('uploads/foto_post/' ~ post.getFotoPost().getUrlImagen()) }}" alt="Foto del post">
             {% endif %}
-            <br>
             <a href="{{ path('ver_post', { id: post.id }) }}">Ver más</a>
         </div>
         {% endfor %}
     </div>
 </div>
 {% endblock %}
-

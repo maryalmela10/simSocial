@@ -1,21 +1,46 @@
-.container {
+.profile-container {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
-    color: #333;
+.profile-info {
     text-align: center;
     margin-bottom: 30px;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info h3 {
+    font-size: 28px;
+    color: #333;
+    margin: 10px 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info p {
+    font-size: 16px;
+    color: #777;
+    margin: 5px 0;
 }
 
 .posts-list {
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .post {
@@ -23,7 +48,7 @@ h1 {
     border-radius: 8px;
     padding: 15px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
     border: 2px solid #1a3a63;
 }
@@ -67,13 +92,18 @@ h1 {
     background-color: #dea1ff;
     color: white;
 }
-
-/* Estilos para el div de solicitud de amistad */
+.post img {
+    width: 100%;        /* La imagen ocupará el 100% del ancho del contenedor */
+    height: 540px;      /* Altura fija de 540px */
+    object-fit: cover;  /* La imagen se recorta para llenar el espacio de manera proporcional */
+    border-radius: 8px; /* Si deseas redondear las esquinas de las imágenes */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Sombra opcional */
+}
 .solicitud-amistad {
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
     margin-top: 30px;
 }
@@ -188,11 +218,16 @@ h1 {
 }
 
 @media (max-width: 600px) {
-    .container {
+    .profile-container {
         padding: 10px;
     }
-    
+
     .post, .solicitud-amistad {
         padding: 10px;
+    }
+
+    .post .profile-avatar {
+        width: 40px; /* Ajustado para dispositivos pequeños */
+        height: 40px;
     }
 }

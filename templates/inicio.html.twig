@@ -7,8 +7,6 @@
 {% block contenido %}
 <div class="container">
     <div class="main-content">
-       
-        
         <h2>Últimos Posts</h2>
         <div class="posts-list">
             {% if posts is defined and posts|length > 0 %}
@@ -20,6 +18,11 @@
                             el {{ post.fecha_publicacion|date("d/m/Y") }} a las {{ post.fecha_publicacion|date("H:i") }}
                         </small>
                         <br>
+                        {% if post.getFotoPost() %}
+                            <div class="post-photo">
+                                <img src="{{ asset('uploads/foto_post/' ~ post.getFotoPost().getUrlImagen()) }}" alt="Foto del post">
+                            </div>
+                        {% endif %}
                         <a href="{{ path('ver_post', { id: post.id }) }}">Ver más</a>
                     </div>
                 {% endfor %}

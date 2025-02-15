@@ -7,47 +7,56 @@
 {% endblock %}
 
 {% block contenido %}
-    <div class="profile-container">
-      <div class="post-container">
-        <p>{{ post.contenido }}</p>
-        <small>
-            Publicado el {{ post.fecha_Publicacion|date("d/m/Y") }} a las {{ post.fecha_Publicacion|date("H:i") }}  
-            - Comentarios: {{ comentarios|length }}
-        </small>
-    </div>    
-    <!-- Sección de reacciones -->
-    <div class="btn-reaccion">
-        <button onclick="reaccionarPost({{ post.id }}, 'me_gusta')">
-            👍 Me Gusta <span id="likes-{{ post.id }}">{{ post.contarReacciones('me_gusta') }}</span>
-        </button>
-        <button onclick="reaccionarPost({{ post.id }}, 'no_me_gusta')">
-            👎 No Me Gusta <span id="dislikes-{{ post.id }}">{{ post.contarReacciones('no_me_gusta') }}</span>
-        </button>
-    </div>
-
-    <div class="profile-info">
-        <!-- Sección de comentarios -->
-        <h2>Comentarios</h2>
-        {% for comentario in comentarios %}
-            <div>
-                <strong>{{ comentario.usuario.getUserIdentifier() }}</strong>  
-                <span>{{ comentario.fechaComentario|date('d-m-Y H:i') }}</span>
-                <p>{{ comentario.contenido }}</p>
+<div class="profile-container">
+    <div class="post-container">
+        <div class="post">
+            <p>{{ post.contenido }}</p>
+                <small>
+                    Publicado el {{ post.fecha_Publicacion|date("d/m/Y") }} a las {{ post.fecha_Publicacion|date("H:i") }}  
+                    - Comentarios: {{ comentarios|length }}
+                </small>
+                {% if post.getFotoPost() %}
+                    <img src="{{ asset('uploads/foto_post/' ~ post.getFotoPost().getUrlImagen()) }}" alt="Foto del post">
+                {% endif %}
+        <!-- Sección de reacciones -->
+        <div class="reaccion-container">
+            <div class="btn-reaccion">
+                <button onclick="reaccionarPost({{ post.id }}, 'me_gusta')">
+                    👍 <span id="likes-{{ post.id }}">{{ post.contarReacciones('me_gusta') }}</span>
+                </button>
+                <button onclick="reaccionarPost({{ post.id }}, 'no_me_gusta')">
+                    👎 <span id="dislikes-{{ post.id }}">{{ post.contarReacciones('no_me_gusta') }}</span>
+                </button>
             </div>
-        {% else %}
-            <p class="no-comments">No hay comentarios aún.</p>
-        {% endfor %}
-    </div>    
-
-    <!-- Formulario para añadir comentario -->
-    <h3>Añadir un comentario</h3>
-    <form action="{{ path('agregar_comentario', {'id': post.id}) }}" method="POST">
-        <textarea name="contenido" required></textarea>
-        <button type="submit">Comentar</button>
-    </form>
-        <!-- Mensaje de reacción -->
-        <div id="mensaje-reaccion" style="display: none;"></div>
+        </div>
     </div>
+    </div>
+           
+        <!-- Sección de comentarios -->
+        <div class="profile-info">
+            <h2>Comentarios</h2>
+                {% for comentario in comentarios %}
+                    <div>
+                        <strong>{{ comentario.usuario.getUserIdentifier() }}</strong>  
+                        <span>{{ comentario.fechaComentario|date('d-m-Y H:i') }}</span>
+                        <p>{{ comentario.contenido }}</p>
+                    </div>
+                {% else %}
+                    <p class="no-comments">No hay comentarios aún.</p>  
+                {% endfor %}    
+
+</div>
+        <!-- Formulario para añadir comentario -->
+        <h3>Añadir un comentario</h3>
+        <form action="{{ path('agregar_comentario', {'id': post.id}) }}" method="POST">
+            <textarea name="contenido" required></textarea>
+            <button type="submit">Comentar</button>
+        </form>
+            <!-- Mensaje de reacción -->
+            <div id="mensaje-reaccion" style="display: none;"></div>
+</div>
+    
+
 {% endblock %}
 
 {% block javascripts %}

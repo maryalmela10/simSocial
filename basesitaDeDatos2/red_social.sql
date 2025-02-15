@@ -74,7 +74,7 @@ CREATE TABLE reacciones (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT NOT NULL,
     post_id INT NOT NULL,
-    tipo ENUM('me_gusta', 'me_divierte') NOT NULL,
+    tipo ENUM('me_gusta', 'no_me_gusta') NOT NULL,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
     FOREIGN KEY (post_id) REFERENCES posts(id),
     UNIQUE (usuario_id, post_id, tipo)
@@ -111,5 +111,4 @@ INSERT INTO comentarios (contenido, post_id, usuario_id) VALUES ('Interesante pe
 
 -- Insertar reacciones
 INSERT INTO reacciones (usuario_id, post_id, tipo) VALUES (1, 2, 'me_gusta');
-INSERT INTO reacciones (usuario_id, post_id, tipo) VALUES (2, 3, 'me_divierte');
 INSERT INTO reacciones (usuario_id, post_id, tipo) VALUES (3, 1, 'me_gusta');

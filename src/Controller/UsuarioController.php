@@ -63,6 +63,11 @@ class UsuarioController extends AbstractController
             ->setMaxResults(10)
             ->getQuery()
             ->getResult();
+        // Añadir la URL de la foto de post si existe
+        foreach ($posts as $post) {
+            $fotoPost = $post->getFotoPost() ? '/uploads/foto_post/' . $post->getFotoPost()->getUrlImagen() : null;
+            $post->fotoPostUrl = $fotoPost;
+        }    
 
         return $this->render('inicio.html.twig', [
             'usuarios' => $usuarios,
@@ -108,12 +113,14 @@ class UsuarioController extends AbstractController
         }
 
          $posts = $usuario->getPosts();
+         $fotoPerfil = $usuario->getFotoPerfil() ? '/uploads/fotos_perfil/' . $usuario->getFotoPerfil()->getUrlImagen() : null;
  
          return $this->render("perfilOtro.html.twig", [
              'amistad' => $amistad,
              'posts' => $posts,
              'enviado_para_actual' => $enviado_para_actual,
-             'usuario' => $usuario
+             'usuario' => $usuario,
+             'fotoPerfil' => $fotoPerfil,
          ]);
     }
 
