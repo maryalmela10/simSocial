@@ -1,0 +1,21 @@
+Ampliaciones
+
+1. Amistad (o seguir a un usuario)
+2. Buscador de usuarios
+3. Registro
+4. 
+5. Contraseña cifrada
+6. Foto de perfil
+7.
+8. Reacciones
+9.
+10. Fotos
+11. Últimos posts (o timeline)
+12.
+13. AJAX
+14. 
+
+Credenciales
+mary@emai.com	Contraseña:1234
+pablo@emai.com	Contraseña:1234
+lucas@email.com Contraseña:1234
