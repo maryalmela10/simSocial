@@ -18,7 +18,7 @@ ADD COLUMN fecha_nacimiento DATE,
 ADD COLUMN localidad VARCHAR(100),
 ADD COLUMN biografia TEXT,
 ADD COLUMN activacion_token VARCHAR(255),
-ADD COLUMN verificado BOOLEAN DEFAULT FALSE;
+ADD COLUMN verificado BOOLEAN DEFAULT 0;
 
 -- -- Renombrar la columna 'clave' a 'password'
 -- ALTER TABLE usuarios CHANGE COLUMN clave password VARCHAR(255) NOT NULL;
@@ -90,14 +90,14 @@ CREATE TABLE reacciones (
 
 
 -- Insertar usuarios
-INSERT INTO usuarios (password, nombre, apellido, email)
-VALUES ('1234', 'pablo', 'pozo', 'pablo@email.com');
+INSERT INTO usuarios (password, nombre, apellido, email, verificado)
+VALUES ('1234', 'pablo', 'pozo', 'pablo@email.com', 1);
 
-INSERT INTO usuarios (password, rol, nombre, apellido, email)
-VALUES ('1234', 'ROLE_ADMIN', 'mary', 'almela', 'mary@email.com');
+INSERT INTO usuarios (password, rol, nombre, apellido, email, verificado)
+VALUES ('1234', 'ROLE_ADMIN', 'mary', 'almela', 'mary@email.com', 1);
 
-INSERT INTO usuarios (password, nombre, apellido, email)
-VALUES ('1234', 'lucas', 'fernandez', 'lucas@email.com');
+INSERT INTO usuarios (password, nombre, apellido, email, verificado)
+VALUES ('1234', 'lucas', 'fernandez', 'lucas@email.com', 1);
 
 -- Insertar posts
 INSERT INTO posts (contenido, usuario_id) VALUES ('Este es mi primer post!', 1);

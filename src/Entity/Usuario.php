@@ -200,7 +200,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function __construct($email = null, $password = null, $nombre = null, $apellido = null, ?\DateTime $fecha_registro = null, $rol = null, ?\DateTime $fecha_nacimiento = null,
-                                $localidad = null, $biografia = null, $activacion_token = null, $verificado = false) 
+                                $localidad = null, $biografia = null, $activacion_token = null, $verificado = '0') 
     {
         $this->email = $email;
         $this->password = $password;

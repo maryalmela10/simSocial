@@ -1,3 +1,52 @@
-<h1>Bienvenido a nuestra plataforma</h1>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        color: #1a3a63;
+        font-size: 24px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    p {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .btn-activar {
+        display: block;
+        width: 200px;
+        margin: 0 auto;
+        padding: 10px 20px;
+        background-color: #99e7ff;
+        color: #333;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 20px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+    .btn-activar:hover {
+        background-color: #dea1ff;
+        color: white;
+    }
+</style>
+{% block contenido %}
+<div class="container">
+<h1>Bienvenido a Sim Social</h1>
 <p>Para activar tu cuenta, haz clic en el siguiente enlace:</p>
-<a href="{{ url('activar_cuenta', {'token': token}) }}">Activar cuenta</a>
+<a class="btn-activar" href="{{ url('activar_cuenta', {'token': token}) }}">Activar cuenta</a>
+</div>
+{% endblock %}

@@ -39,6 +39,12 @@ class Registros extends AbstractController
         $verificarContrasena = $request->request->get('verificar_contrasena');
         $fechaNacimiento = $request->request->get('fecha_nacimiento');
 
+        // Verificar si ya existe un usuario con ese correo
+        $usuarioExistente = $entityManager->getRepository(Usuario::class)->findOneBy(['email' => $email]);
+        if ($usuarioExistente) {
+            return $this->render('registroPendiente.html.twig', ['errorUsuarioExiste' => 'Ya existe una cuenta con este correo electrónico.']);
+        }
+
         // Crear nuevo usuario
         $usuario = new Usuario();
         $usuario->setNombre($nombre);
@@ -54,6 +60,7 @@ class Registros extends AbstractController
         // Generar token de activación
         $token = bin2hex(random_bytes(32));
         $usuario->setActivacion_token($token);
+        $usuario->setVerificado('0');
 
         // Guardar usuario
         $entityManager->persist($usuario);
@@ -78,12 +85,10 @@ class Registros extends AbstractController
             throw $this->createNotFoundException('Token de activación inválido.');
         }
 
-        $usuario->setVerificado(true);
+        $usuario->setVerificado('1');
         $usuario->setActivacion_token(null);
         $entityManager->flush();
 
-        $this->addFlash('success', 'Tu cuenta ha sido activada. Ya puedes iniciar sesión.');
-
-        return $this->redirectToRoute('login');
+        return $this->render('login.html.twig');
     }
 }
