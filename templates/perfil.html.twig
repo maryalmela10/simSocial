@@ -34,8 +34,8 @@
     
     {% if app.user.id == usuario.id %} 
         <!-- Formulario para crear nuevo post (solo visible en el perfil propio) -->
-        <form method="POST" action="{{ path('miPerfil', {'id_usuario': usuario.id}) }}" enctype="multipart/form-data" class="new-post-form">
-            <textarea name="contenido" placeholder="¿Qué estás pensando?"></textarea>
+        <form id="formulario" method="POST" action="{{ path('miPerfil', {'id_usuario': usuario.id}) }}" enctype="multipart/form-data" class="new-post-form">
+            <textarea name="contenido" id="contenido-post" placeholder="¿Qué estás pensando?"></textarea>
             <label for="foto_post" class="file-label">Seleccionar Archivo</label>
             <input type="file" id="foto_post" name="foto_post" accept="image/*">
             <button type="submit">Publicar</button>
@@ -58,4 +58,42 @@
         {% endfor %}
     </div>
 </div>
+{% endblock %}
+{% block javascripts %}
+<script>
+const CLAVE_BORRADOR = 'red_social_borrador';
+
+function guardarBorrador() {
+    const elementoContenido = document.getElementById('contenido-post');
+    if (elementoContenido) {
+        const contenido = elementoContenido.value;
+        localStorage.setItem(CLAVE_BORRADOR, contenido);
+        console.log('Borrador guardado');
+    }
+}
+
+function cargarBorrador() {
+    const contenido = localStorage.getItem(CLAVE_BORRADOR);
+    if (contenido) {
+        const elementoContenido = document.getElementById('contenido-post');
+        if (elementoContenido) {
+            elementoContenido.value = contenido;
+            console.log('Borrador cargado');
+        }
+    }
+}
+
+function limpiarBorrador() {
+    localStorage.removeItem(CLAVE_BORRADOR);
+    console.log('Borrador eliminado');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    cargarBorrador();
+    const formulario = document.getElementById('formulario');
+    formulario.addEventListener('submit', limpiarBorrador);
+    const elementoContenido = document.getElementById('contenido-post');
+    elementoContenido.addEventListener('input', guardarBorrador);
+});
+</script>
 {% endblock %}
