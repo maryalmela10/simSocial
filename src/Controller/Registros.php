@@ -24,7 +24,7 @@ class Registros extends AbstractController
 
 
     #[Route('/registrarse', name: 'registroUsuario')]
-    public function registrar(Request $request)
+    public function registrar()
     {
        return $this->render('registrarse.html.twig');
     }
@@ -91,5 +91,27 @@ class Registros extends AbstractController
         $entityManager->flush();
 
         return $this->render('login.html.twig');
+    }
+
+    // #[Route('/olvidarContrasena/{token}', name: 'activar_cuenta')]
+    // public function activarCuenta(string $token, EntityManagerInterface $entityManager)
+    // {
+    //     $usuario = $entityManager->getRepository(Usuario::class)->findOneBy(['activacion_token' => $token]);
+
+    //     if (!$usuario) {
+    //         throw $this->createNotFoundException('Token de activación inválido.');
+    //     }
+
+    //     $usuario->setVerificado('1');
+    //     $usuario->setActivacion_token(null);
+    //     $entityManager->flush();
+
+    //     return $this->render('login.html.twig');
+    // }
+
+    #[Route('/recuperarPassword', name: 'recuperarPassword')]
+    public function recuperarPassword(Request $request)
+    {
+       return $this->render('registrarse.html.twig');
     }
 }
