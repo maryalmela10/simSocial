@@ -64,3 +64,23 @@ button[type="submit"] {
 button[type="submit"]:hover {
     background-color: #0c47a1;
 }
+
+.login-links {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.login-links a {
+    color: #1a73e8;
+    text-decoration: none;
+    font-size: 0.9em;
+    transition: color 0.3s ease;
+}
+
+.login-links a:hover {
+    color: #0c47a1;
+    text-decoration: underline;
+}

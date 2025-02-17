@@ -35,6 +35,7 @@ class PedidosBase extends AbstractController
     public function mostrarInicio(EntityManagerInterface $entityManager)
     {
         $usuarioActual = $this->getUser();
+        $usuarioActual->setActivacion_token(null);
 
         // Obtener los IDs de los amigos aceptados
         $amigosIds = $entityManager->createQueryBuilder()

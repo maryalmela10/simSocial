@@ -93,25 +93,73 @@ class Registros extends AbstractController
         return $this->render('login.html.twig');
     }
 
-    // #[Route('/olvidarContrasena/{token}', name: 'activar_cuenta')]
-    // public function activarCuenta(string $token, EntityManagerInterface $entityManager)
-    // {
-    //     $usuario = $entityManager->getRepository(Usuario::class)->findOneBy(['activacion_token' => $token]);
-
-    //     if (!$usuario) {
-    //         throw $this->createNotFoundException('Token de activación inválido.');
-    //     }
-
-    //     $usuario->setVerificado('1');
-    //     $usuario->setActivacion_token(null);
-    //     $entityManager->flush();
-
-    //     return $this->render('login.html.twig');
-    // }
-
     #[Route('/recuperarPassword', name: 'recuperarPassword')]
-    public function recuperarPassword(Request $request)
+    public function recuperarPassword()
     {
-       return $this->render('registrarse.html.twig');
+       return $this->render('recuperarPassword.html.twig');
     }
+
+    #[Route('/cambiar_contrasena', name: 'cambiar_contrasena')]
+    public function cambiar_contrasena(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer)
+    {
+        if ($request->isMethod('POST')) {
+            $email = $request->request->get('email');
+            $usuario = $entityManager->getRepository(Usuario::class)->findOneBy(['email' => $email]);
+
+            if (!$usuario) {
+                return $this->render('recuperarPassword.html.twig', ['mensaje' => 'No se encontró ningún usuario con este correo electrónico.',
+                'color' => 'red']);
+            } else {
+                // Generar token
+                $token = bin2hex(random_bytes(32));
+                $usuario->setActivacion_token($token);
+                $entityManager->persist($usuario);
+                $entityManager->flush();
+
+                // Enviar email
+                $correo = new Email();
+                $correo->from(new Address('noreply@simsocial.com', 'Sistema de recuperación de contraseña'));
+                $correo->to(new Address($request->request->get('email')));
+                $correo->subject("Recupera tu contraseña");
+                $correo->html($this->renderView('nuevaContrasena.html.twig', ['token' => $token]));
+                $mailer->send($correo);
+                return $this->render('recuperarPassword.html.twig', ['mensaje' => 'Se ha enviado un correo con instrucciones para recuperar tu contraseña.',
+                'color' => 'green']);
+            }
+        }
+
+        return $this->redirectToRoute('ctrl_login');
+    }
+
+    #[Route('/restablecer-contrasena/{token}', name: 'restablecer_contrasena')]
+    public function restablecerContrasena(string $token, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher)
+    {
+        // Buscar el usuario por el token
+        $usuario = $entityManager->getRepository(Usuario::class)->findOneBy(['activacion_token' => $token]);
+
+        // Verificar si el token es válido
+        if (!$usuario) {
+            return $this->redirectToRoute('ctrl_login');
+        }
+
+        if ($request->isMethod('POST')) {
+            $nuevaContrasena = $request->request->get('nueva_contrasena');
+
+            // Actualizar la contraseña
+                $hashedPassword = $passwordHasher->hashPassword($usuario, $nuevaContrasena);
+                $usuario->setPassword($hashedPassword);
+
+                // Eliminar el token de recuperación
+                $usuario->setActivacion_token(null);
+
+                $entityManager->persist($usuario);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('ctrl_login');
+        }
+
+         return $this->render('restablecer_contrasena.html.twig', [
+        'token' => $token]);
+    }
+
 }
