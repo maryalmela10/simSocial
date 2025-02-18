@@ -7,65 +7,62 @@
 {% block contenido %}
 <div class="profile-container">
 {% if amistad and amistad.estado == 'aceptado' %}
-    <div class="profile-info">
+<div class="profile-info">
     <h3>Perfil de {{ usuario.nombre|capitalize }} {{ usuario.apellido|capitalize }}</h3>
     <div class="eliminar-amigo">
         <button class="btn-eliminar-amigo" onclick="abrirModal()">Eliminar amigo</button>
     </div>
     <!-- Mostrar la foto de perfil -->
     <img src="{{ asset(fotoPerfil ? asset('uploads/fotos_perfil/' ~ fotoPerfil) :asset('')) }}" alt="Foto de perfil" class="profile-avatar">
-    </div>
-    <div class="profile-details">
-        <table>
-            <tr>
-                <td><strong>Email:</strong></td>
-                <td>{{ usuario.email }}</td>
-            </tr>
-            <tr>
-                <td><strong>Registrado:</strong></td>
-                <td>{{ usuario.fecha_registro|date('d/m/Y') }}</td>
-            </tr>
-            <tr>
-                <td><strong>Fecha de Nacimiento:</strong></td>
-                <td>{{ usuario.fechaNacimiento|date('d/m/Y') }}</td>
-            </tr>
-            <tr>
-                <td><strong>Biografía:</strong></td>
-                <td>{{ usuario.biografia }}</td>
-            </tr>
-            <tr>
-                <td><strong>Localidad:</strong></td>
-                <td>{{ usuario.localidad }}</td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="posts-list">
-        {% for post in posts %}
-        <div class="post">
-                <p>{{ post.contenido }}</p>
-                <small>
-                    Publicado el {{ post.fecha_publicacion|date("d/m/Y") }} a las {{ post.fecha_publicacion|date("H:i") }} - Comentarios: {{ post.comentarios|length }}
-                </small>
-            {% if post.getFotoPost %}
-                <!-- Mostrar la imagen del post -->
-                    <img src="{{ asset('uploads/foto_post/' ~ post.getFotoPost().getUrlImagen()) }}" alt="Foto del post" class="post-img">
-            {% endif %}
-                <a href="{{ path('ver_post', { id: post.id }) }}">Ver más</a> {# Enlace al detalle del post #}
-            </div>
-            {% endfor %}
-    </div>        
-        
-              <!-- Modal de confirmación -->
-        <div id="modal-confirmacion" class="modal" display = 'none'>
-            <div class="modal-contenido">
-                <p>¿Estás seguro de que quieres eliminar a este amigo?</p>
-                <form action="{{ path('eliminar_amigo', {'id': usuario.id}) }}" method="post">
-                    <button type="submit" class="btn-confirmar">Confirmar</button>
-                    <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
-                </form>
-            </div>
+        <div class="profile-details">
+        <div class="profile-item">
+            <strong>Email:</strong>
+            <span>{{ usuario.email }}</span>
         </div>
+        <div class="profile-item">
+            <strong>Registrado:</strong>
+            <span>{{ usuario.fecha_registro|date('d/m/Y') }}</span>
+        </div>
+        <div class="profile-item">
+            <strong>Fecha de Nacimiento:</strong>
+            <span>{{ usuario.fechaNacimiento|date('d/m/Y') }}</span>
+        </div>
+        <div class="profile-item">
+            <strong>Biografía:</strong>
+            <span>{{ usuario.biografia }}</span>
+        </div>
+        <div class="profile-item">
+            <strong>Localidad:</strong>
+            <span>{{ usuario.localidad }}</span>
+        </div>
+    </div>
+</div>
+<div class="posts-list">
+    {% for post in posts %}
+    <div class="post">
+        <p>{{ post.contenido }}</p>
+        <small>
+            Publicado el {{ post.fecha_publicacion|date("d/m/Y") }} a las {{ post.fecha_publicacion|date("H:i") }} - Comentarios: {{ post.comentarios|length }}
+        </small>
+        {% if post.getFotoPost %}
+        <!-- Mostrar la imagen del post -->
+        <img src="{{ asset('uploads/foto_post/' ~ post.getFotoPost().getUrlImagen()) }}" alt="Foto del post" class="post-img">
+        {% endif %}
+        {# Enlace al detalle del post #}
+        <a href="{{ path('ver_post', { id: post.id }) }}">Ver más</a> 
+    </div>
+    {% endfor %}
+</div>        
+    <!-- Modal de confirmación -->
+    <div id="modal-confirmacion" class="modal" display = 'none'>
+        <div class="modal-contenido">
+            <p>¿Estás seguro de que quieres eliminar a este amigo?</p>
+            <form action="{{ path('eliminar_amigo', {'id': usuario.id}) }}" method="post">
+                <button type="submit" class="btn-confirmar">Confirmar</button>
+                <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+            </form>
+        </div>
+    </div>
     {% elseif amistad and amistad.estado == 'pendiente' %}
         <div class="solicitud-amistad">
             <p>Tienes una solicitud de amistad pendiente con este usuario.</p>

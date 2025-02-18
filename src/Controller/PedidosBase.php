@@ -158,7 +158,6 @@ class PedidosBase extends AbstractController
         return $this->render("perfil.html.twig", [
             'posts' => $posts,
             'usuario' => $usuario,
-            'fotoPerfil' => $fotoPerfil 
             'fotoPerfil' => $fotoPerfil,
             'fecha_nacimiento' => $usuario->getFechaNacimiento(),
             'biografia' => $usuario->getBiografia(),

@@ -1,4 +1,4 @@
-   .profile-container {
+.profile-container {
     max-width: 800px;
     margin: 40px auto 0 auto;
     padding: 20px;
@@ -42,6 +42,18 @@
     color: #777;
     margin: 5px 0;
     line-height: 1.6;
+}
+.table-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centra el contenedor de la tabla */
+}
+
+table {
+    width: 80%; /* Ajusta el ancho de la tabla según tus necesidades */
+    margin: 0 auto; /* Asegura que la tabla se centre dentro del contenedor */
+    border-collapse: collapse; /* Elimina los bordes dobles entre celdas */
 }
 
 .new-post-form {

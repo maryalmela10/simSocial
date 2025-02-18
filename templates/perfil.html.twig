@@ -31,19 +31,22 @@
     {% endif %}    
         <h3>{{ app.user.nombre|capitalize }} {{ app.user.apellido|capitalize }}</h3>
         <!-- Tabla de información del perfil -->
-        <table>
-            <tr>
-                <td>
-                    <p>Email: {{ app.user.email }}</p>
-                    <p>Registrado: {{ app.user.fecha_registro|date("d/m/Y") }}</p>
-                    <p>Fecha de Nacimiento: {{ fecha_nacimiento|date('d/m/Y') }}</p>
-                </td>
-                <td>
-                    <p><strong>Biografía:</strong> {{ biografia }}</p>
-                    <p><strong>Localidad:</strong> {{ localidad }}</p>
-                </td>
-            </tr>
-        </table>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <td>
+                        <p>Email: {{ app.user.email }}</p>
+                        <p>Registrado: {{ app.user.fecha_registro|date("d/m/Y") }}</p>
+                        <p>Fecha de Nacimiento: {{ fecha_nacimiento|date('d/m/Y') }}</p>
+                    </td>
+                    <td>
+                        <p><strong>Biografía:</strong> {{ biografia }}</p>
+                        <p><strong>Localidad:</strong> {{ localidad }}</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    
     <!--Formulario de editar informacion personal-->
     <form id="formularioEditarPerfil" method="POST" action="{{ path('miPerfil', {'id_usuario': usuario.id}) }}" style="display: none;">
         <input type="hidden" name="editar_perfil" value="1"> {# Identificador del formulario #}

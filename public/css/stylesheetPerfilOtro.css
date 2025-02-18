@@ -35,7 +35,15 @@
     color: #777;
     margin: 5px 0;
 }
-
+.profile-details {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 0 auto;
+    padding: 20px;
+    max-width: 100%;
+}
 .posts-list {
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 10px;
