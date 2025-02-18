@@ -3,7 +3,6 @@ namespace App\Entity;
 use App\Entity\Usuario;
 use Doctrine\ORM\Mapping as ORM;
 
-
 #[ORM\Entity]
 #[ORM\Table(name: "foto_post")]
 class FotoPost
@@ -13,7 +12,6 @@ class FotoPost
     #[ORM\Column(type: "integer")]
     private int $id;
 
-    
     #[ORM\OneToOne(inversedBy: 'fotoPost', targetEntity: Post::class)]
     #[ORM\JoinColumn(name: 'post_id', referencedColumnName: 'id', nullable: false)]
     private ?Post $post = null;

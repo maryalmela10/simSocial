@@ -35,32 +35,23 @@ class ControladorGeneral extends AbstractController
     {
         // Obtener el usuario actual
         $usuarioActual = $security->getUser();
-
-        // Verificar si el usuario está autenticado
-        if (!$usuarioActual) {
-            // Si no está autenticado, redirigir al login
-            return new RedirectResponse($this->generateUrl('ctrl_login'));
-        }
-
+        // Verificar si el usuario está autenticado,si no está autenticado, redirigir al login
         // Verificar si el id_usuario coincide con el usuario autenticado
-        if ($usuarioActual instanceof Usuario && $usuarioActual->getId() != $id_usuario) {
-            // Si no coincide, redirigir al inicio
-            return new RedirectResponse($this->generateUrl('inicio'));
+        if (!$usuarioActual || ($usuarioActual instanceof Usuario && $usuarioActual->getId() != $id_usuario)) {
+            return $this->redirectToRoute($usuarioActual ? 'inicio' : 'ctrl_login');
         }
 
         $usuario = $entityManager->getRepository(Usuario::class)->find($id_usuario);
-
         if (!$usuario) {
             throw $this->createNotFoundException('Usuario no encontrado');
         }
+
         //foto de perfil
         $fotoPerfil = $entityManager->getRepository(FotosPerfil::class)->findOneBy(['usuario' => $usuario]);
         $posts = $usuario->getPosts();
-
         // Iterar sobre los posts para cargar las fotos asociadas
         foreach ($posts as $post) {
             $post->comentariosCount = count($post->getComentarios());
-    
             // Asegurarse de que la foto del post esté cargada (Doctrine lo maneja automáticamente)
             $fotoPost = $post->getFotoPost();
         }
@@ -81,15 +72,12 @@ class ControladorGeneral extends AbstractController
     
                     // Crear la entidad FotoPost
                     $fotoPost = new FotoPost();
-                    $fotoPost->setUrlImagen($fotoNombre);
-                    $fotoPost->setPost($post); // Relacionar la foto con el post
-    
+                    $fotoPost->setUrlImagen($fotoNombre);    
                     // Relacionar la foto con el post
                     $fotoPost->setPost($post);     
                     // Persistir la entidad FotoPostfotos
                     $entityManager->persist($fotoPost);
                 }
-    
                 // Persistir el post
                 $entityManager->persist($post);
                 $entityManager->flush();
@@ -150,7 +138,7 @@ class ControladorGeneral extends AbstractController
             return $this->redirectToRoute('miPerfil', ['id_usuario' => $id_usuario]);
         }   
                 
-        // Luego, pasas los datos a la plantilla
+        // Luego, pasamos los datos a la plantilla
         return $this->render("perfil.html.twig", [
             'posts' => $posts,
             'usuario' => $usuario,
@@ -164,8 +152,6 @@ class ControladorGeneral extends AbstractController
     #[Route('/verPost/{id_usuario}', name:'verPost')]
     public function verPost(EntityManagerInterface $entityManager, $id_usuario) {
         $posts = $entityManager->getRepository(Usuario::class)->find($id_usuario)->getPosts();
-        // $categorias = $entityManager->getRepository(Categoria::class)->findAll();
-        // return $this->render("categorias.html.twig", ['categorias'=>$categorias]);
         return $this->render("perfil.html.twig",['posts'=>$posts]);
     }
 
@@ -177,10 +163,8 @@ class ControladorGeneral extends AbstractController
         if (!$post) {
             throw $this->createNotFoundException('El post no existe.');
         }
-        
         // Obtiene los comentarios asociados al post
         $comentarios = $post->getComentarios();
-        
         // Obtiene el usuario autenticado directamente con $this->getUser()
         $usuario = $this->getUser();
     
@@ -203,9 +187,10 @@ class ControladorGeneral extends AbstractController
         if (!$contenido) {
             return $this->redirectToRoute('ver_post', ['id' => $id]);
         }
-    
-        $usuario = $security->getUser(); // Obtiene el usuario autenticado
-        $email = $usuario->getUserIdentifier(); // Obtienes el email (en lugar de username)
+        // Obtiene el usuario autenticado
+        $usuario = $security->getUser(); 
+        // Obtiene el email (en lugar de username)
+        $email = $usuario->getUserIdentifier(); 
 
         // Crear el comentario y asignarle al usuario autenticado
         $comentario = new Comentario();

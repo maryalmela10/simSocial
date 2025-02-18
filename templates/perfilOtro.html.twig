@@ -48,7 +48,7 @@
         <!-- Mostrar la imagen del post -->
         <img src="{{ asset('uploads/foto_post/' ~ post.getFotoPost().getUrlImagen()) }}" alt="Foto del post" class="post-img">
         {% endif %}
-        {# Enlace al detalle del post #}
+        <!--  Enlace al detalle del post -->
         <a href="{{ path('ver_post', { id: post.id }) }}">Ver más</a> 
     </div>
     {% endfor %}

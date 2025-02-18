@@ -113,7 +113,8 @@ class Post
     public function setFotoPost(FotoPost $fotoPost): self
     {
         $this->fotoPost = $fotoPost;
-        $fotoPost->setPost($this); // Asociar la foto con el post
+        // Asociar la foto con el post
+        $fotoPost->setPost($this); 
         return $this;
     }
     
@@ -128,7 +129,8 @@ class Post
     public function tieneReaccion(?Usuario $usuario, string $tipo): bool
     {
         if (!$usuario) {
-            return false; // Si no hay usuario logueado, no puede haber reacción
+            // Si no hay usuario logueado, no puede haber reacción
+            return false; 
         }
     
         foreach ($this->reacciones as $reaccion) {

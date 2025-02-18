@@ -145,21 +145,20 @@ form button:hover {
     gap: 5px;
 }
 
-/* Cuando el usuario pasa el mouse */
 .btn-reaccion button:hover {
     background: linear-gradient(90deg, #dea1ff 0%, #99e7ff 100%);
     color: white;
     transform: scale(1.05);
 }
 
-/* ESTILOS NUEVOS PARA REACCIONES ACTIVAS */
+/* ESTILOS PARA REACCIONES ACTIVAS */
 .btn-reaccion button.active {
     background: #ffac4c;
     color: white;
     transform: scale(1.1);
 }
 
-/* Agregar animación cuando se reacciona */
+/* animación cuando se reacciona */
 .btn-reaccion button.animar-reaccion {
     animation: zoom-icon 0.3s ease-in-out;
 }
