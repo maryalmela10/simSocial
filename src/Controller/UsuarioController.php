@@ -81,10 +81,6 @@ public function inicio(): Response
     ]);
 }
 
-
-
-
-
     #[Route('/usuario/{id}', name: 'ver_perfil')]
     public function verPerfil(EntityManagerInterface $entityManager, int $id)
     {

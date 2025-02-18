@@ -35,31 +35,28 @@
         </div>
     </div>
            
-        <!-- Sección de comentarios -->
-        <div class="profile-info">
-            <h2>Comentarios</h2>
-                {% for comentario in comentarios %}
-                    <div>
-                        <strong>{{ comentario.usuario.getUserIdentifier() }}</strong>  
-                        <span>{{ comentario.fechaComentario|date('d-m-Y H:i') }}</span>
-                        <p>{{ comentario.contenido }}</p>
-                    </div>
-                {% else %}
-                    <p class="no-comments">No hay comentarios aún.</p>  
-                {% endfor %}    
-
-</div>
-        <!-- Formulario para añadir comentario -->
-        <h3>Añadir un comentario</h3>
-        <form action="{{ path('agregar_comentario', {'id': post.id}) }}" method="POST">
-            <textarea name="contenido" required></textarea>
-            <button type="submit">Comentar</button>
-        </form>
-            <!-- Mensaje de reacción -->
-            <div id="mensaje-reaccion" style="display: none;"></div>
-</div>
-    
-
+    <!-- Sección de comentarios -->
+    <div class="profile-info">
+        <h2>Comentarios</h2>
+            {% for comentario in comentarios %}
+                <div>
+                    <strong>{{ comentario.usuario.getUserIdentifier() }}</strong>  
+                    <span>{{ comentario.fechaComentario|date('d-m-Y H:i') }}</span>
+                    <p>{{ comentario.contenido }}</p>
+                </div>
+            {% else %}
+                <p class="no-comments">No hay comentarios aún.</p>  
+            {% endfor %}    
+    </div>
+    <!-- Formulario para añadir comentario -->
+    <h3>Añadir un comentario</h3>
+    <form action="{{ path('agregar_comentario', {'id': post.id}) }}" method="POST">
+        <textarea name="contenido" required></textarea>
+        <button type="submit">Comentar</button>
+    </form>
+    <!-- Mensaje de reacción -->
+    <div id="mensaje-reaccion" style="display: none;"></div>
+</div>   
 {% endblock %}
 
 {% block javascripts %}

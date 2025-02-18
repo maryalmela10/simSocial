@@ -30,10 +30,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 #[IsGranted('ROLE_USER')]
 class PedidosBase extends AbstractController
 {
-    
-
-
-
     #[Route('/miPerfil/{id_usuario}', name: 'miPerfil')]
     public function miPerfil(EntityManagerInterface $entityManager, Security $security, $id_usuario, Request $request)
     {
@@ -104,37 +100,37 @@ class PedidosBase extends AbstractController
         }
 
         //la chicha de fotos de perfil para subir,cambiar o eliminarla
-            if ($file = $request->files->get('foto_perfil')) {
-                $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/uploads/fotos_perfil/';
-                $filesystem = new Filesystem();
-                $nombreArchivo = uniqid() . '.' . $file->guessExtension();
-                $file->move($uploadsDir, $nombreArchivo);
-                
-                if ($fotoPerfil) {
-                    $filesystem->remove($uploadsDir . $fotoPerfil->getUrlImagen());
-                    $fotoPerfil->setUrlImagen($nombreArchivo);
-                } else {
-                    $fotoPerfil = new FotosPerfil();
-                    $fotoPerfil->setUsuario($usuario);
-                    $fotoPerfil->setUrlImagen($nombreArchivo);
-                    $entityManager->persist($fotoPerfil);
-                }
-                
-                $entityManager->flush();
-                $this->addFlash('success', 'Foto de perfil actualizada.');
-                return $this->redirectToRoute('miPerfil', ['id_usuario' => $id_usuario]);
-            }
-        //eliminar foto
-            if ($request->request->has('eliminar_foto') && $fotoPerfil) {
-                $filesystem = new Filesystem();
-                $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/uploads/fotos_perfil/';
+        if ($file = $request->files->get('foto_perfil')) {
+            $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/uploads/fotos_perfil/';
+            $filesystem = new Filesystem();
+            $nombreArchivo = uniqid() . '.' . $file->guessExtension();
+            $file->move($uploadsDir, $nombreArchivo);
+            
+            if ($fotoPerfil) {
                 $filesystem->remove($uploadsDir . $fotoPerfil->getUrlImagen());
-                
-                $entityManager->remove($fotoPerfil);
-                $entityManager->flush();
-                $this->addFlash('success', 'Foto de perfil eliminada.');
-                return $this->redirectToRoute('miPerfil', ['id_usuario' => $id_usuario]);
+                $fotoPerfil->setUrlImagen($nombreArchivo);
+            } else {
+                $fotoPerfil = new FotosPerfil();
+                $fotoPerfil->setUsuario($usuario);
+                $fotoPerfil->setUrlImagen($nombreArchivo);
+                $entityManager->persist($fotoPerfil);
             }
+            
+            $entityManager->flush();
+            $this->addFlash('success', 'Foto de perfil actualizada.');
+            return $this->redirectToRoute('miPerfil', ['id_usuario' => $id_usuario]);
+        }
+        //eliminar foto
+        if ($request->request->has('eliminar_foto') && $fotoPerfil) {
+            $filesystem = new Filesystem();
+            $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/uploads/fotos_perfil/';
+            $filesystem->remove($uploadsDir . $fotoPerfil->getUrlImagen());
+            
+            $entityManager->remove($fotoPerfil);
+            $entityManager->flush();
+            $this->addFlash('success', 'Foto de perfil eliminada.');
+            return $this->redirectToRoute('miPerfil', ['id_usuario' => $id_usuario]);
+        }
         
         // Procesar formulario de edición del perfil
         if ($request->isMethod('POST') && $request->request->has('editar_perfil')) {
@@ -271,6 +267,4 @@ class PedidosBase extends AbstractController
             'tipo' => $reaccion->getTipo()
         ]);
     }
-    
-
 }
