@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 
 #[IsGranted('ROLE_USER')]
-class PedidosBase extends AbstractController
+class ControladorGeneral extends AbstractController
 {
     #[Route('/miPerfil/{id_usuario}', name: 'miPerfil')]
     public function miPerfil(EntityManagerInterface $entityManager, Security $security, $id_usuario, Request $request)
