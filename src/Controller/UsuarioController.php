@@ -25,55 +25,62 @@ class UsuarioController extends AbstractController
     }
 
     #[Route('/inicio', name: 'inicio')]
-    public function inicio(): Response
-    {
-        $usuarioActual = $this->getUser();
+public function inicio(): Response
+{
+    $usuarioActual = $this->getUser();
 
-        // Obtener usuarios excepto el actual directamente de la base de datos
-        $usuarios = $this->entityManager->getRepository(Usuario::class)
-            ->createQueryBuilder('u')
-            ->where('u != :usuarioActual')
-            ->setParameter('usuarioActual', $usuarioActual)
-            ->getQuery()
-            ->getResult();
-
-        // Obtener los IDs de los amigos aceptados
-        $amigosIds = $this->entityManager->createQueryBuilder()
-            ->select('CASE 
-            WHEN a.usuario_a_id = :userId THEN a.usuario_b_id 
-            ELSE a.usuario_a_id 
-        END')
-            ->from(Amistad::class, 'a')
-            ->where('(a.usuario_a_id = :userId OR a.usuario_b_id = :userId)')
-            ->andWhere('a.estado = :estado')
-            ->setParameter('userId', $usuarioActual->getId())
-            ->setParameter('estado', 'aceptado')
-            ->getQuery()
-            ->getResult();
-
-        $amigosIds = array_column($amigosIds, 1);
-        $amigosIds[] = $usuarioActual->getId(); // Incluir posts del usuario actual
-
-        // Obtener los posts de los amigos aceptados y del usuario actual
-        $posts = $this->entityManager->getRepository(Post::class)
-            ->createQueryBuilder('p')
-            ->where('p.usuario IN (:amigos)')
-            ->setParameter('amigos', $amigosIds)
-            ->orderBy('p.fecha_publicacion', 'DESC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult();
-        // Añadir la URL de la foto de post si existe
-        foreach ($posts as $post) {
-            $fotoPost = $post->getFotoPost() ? '/uploads/foto_post/' . $post->getFotoPost()->getUrlImagen() : null;
-            $post->fotoPostUrl = $fotoPost;
-        }    
-
-        return $this->render('inicio.html.twig', [
-            'usuarios' => $usuarios,
-            'posts' => $posts,
-        ]);
+    // Verificar si el usuario tiene el correo electrónico "mary@email.com"
+    if ($usuarioActual->getEmail() === 'mary@email.com') {
+        return $this->redirectToRoute('admin_dashboard');
     }
+
+    // Obtener usuarios excepto el actual directamente de la base de datos
+    $usuarios = $this->entityManager->getRepository(Usuario::class)
+        ->createQueryBuilder('u')
+        ->where('u != :usuarioActual')
+        ->setParameter('usuarioActual', $usuarioActual)
+        ->getQuery()
+        ->getResult();
+
+    // Obtener los IDs de los amigos aceptados
+    $amigosIds = $this->entityManager->createQueryBuilder()
+        ->select('CASE 
+        WHEN a.usuario_a_id = :userId THEN a.usuario_b_id 
+        ELSE a.usuario_a_id 
+    END')
+        ->from(Amistad::class, 'a')
+        ->where('(a.usuario_a_id = :userId OR a.usuario_b_id = :userId)')
+        ->andWhere('a.estado = :estado')
+        ->setParameter('userId', $usuarioActual->getId())
+        ->setParameter('estado', 'aceptado')
+        ->getQuery()
+        ->getResult();
+
+    $amigosIds = array_column($amigosIds, 1);
+    $amigosIds[] = $usuarioActual->getId(); // Incluir posts del usuario actual
+
+    // Obtener los posts de los amigos aceptados y del usuario actual
+    $posts = $this->entityManager->getRepository(Post::class)
+        ->createQueryBuilder('p')
+        ->where('p.usuario IN (:amigos)')
+        ->setParameter('amigos', $amigosIds)
+        ->orderBy('p.fecha_publicacion', 'DESC')
+        ->setMaxResults(10)
+        ->getQuery()
+        ->getResult();
+    // Añadir la URL de la foto de post si existe
+    foreach ($posts as $post) {
+        $fotoPost = $post->getFotoPost() ? '/uploads/foto_post/' . $post->getFotoPost()->getUrlImagen() : null;
+        $post->fotoPostUrl = $fotoPost;
+    }    
+
+    return $this->render('inicio.html.twig', [
+        'usuarios' => $usuarios,
+        'posts' => $posts,
+        'admin_view' => false,
+    ]);
+}
+
 
 
 

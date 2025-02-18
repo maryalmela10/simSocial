@@ -31,55 +31,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 #[IsGranted('ROLE_USER')]
 class PedidosBase extends AbstractController
 {
-    #[Route('/inicio', name: 'inicio')]
-    public function mostrarInicio(EntityManagerInterface $entityManager)
-    {
-        $usuarioActual = $this->getUser();
-        $usuarioActual->setActivacion_token(null);
-
-        // Obtener los IDs de los amigos aceptados
-        $amigosIds = $entityManager->createQueryBuilder()
-            ->select('CASE 
-            WHEN a.usuario_a_id = :userId THEN a.usuario_b_id 
-            ELSE a.usuario_a_id 
-        END')
-            ->from(Amistad::class, 'a')
-            ->where('(a.usuario_a_id = :userId OR a.usuario_b_id = :userId)')
-            ->andWhere('a.estado = :estado')
-            ->setParameter('userId', $usuarioActual->getId())
-            ->setParameter('estado', 'aceptado')
-            ->getQuery()
-            ->getResult();
-
-        $amigosIds = array_column($amigosIds, 1);
-
-        // Añadir el ID del usuario actual para incluir sus propios posts
-        $amigosIds[] = $usuarioActual->getId();
-
-        // Obtener los posts de los amigos aceptados y del usuario actual
-        $posts = $entityManager->getRepository(Post::class)
-            ->createQueryBuilder('p')
-            ->where('p.usuario IN (:amigos)')
-            ->setParameter('amigos', $amigosIds)
-            ->orderBy('p.fecha_publicacion', 'DESC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult();
-
-        $usuarios = $entityManager->getRepository(Usuario::class)
-            ->createQueryBuilder('u')
-            ->where('u != :usuarioActual')
-            ->setParameter('usuarioActual', $usuarioActual)
-            ->getQuery()
-            ->getResult();
-
-        dump($posts);
-
-        return $this->render("inicio.html.twig", [
-            'posts' => $posts,
-            'usuarios' => $usuarios
-        ]);
-    }
+    
 
 
 

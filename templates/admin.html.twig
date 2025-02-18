@@ -1,0 +1,101 @@
+{# templates/admin.html.twig #}
+{% extends 'base.html.twig' %}
+{% block title %}Panel de Administrador{% endblock %}
+{% block stylesheets %}
+ {{ parent() }}
+<link href="{{ asset('css/stylesheetAdmin.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block contenido %}
+<div class="container">
+    <div class="main-content">
+        <h2>Panel de Administrador</h2>
+        <div id="papelera">🗑️ Arrastra aquí para eliminar</div>
+        <div class="posts-list">
+            {% if posts is defined and posts|length > 0 %}
+                {% for post in posts %}
+                    <div class="post" draggable="true" data-post-id="{{ post.id }}">
+                        <p>{{ post.contenido }}</p>
+                        <small>
+                            Por {{ post.usuario.nombre }} {{ post.usuario.apellido }} 
+                            el {{ post.fecha_publicacion|date("d/m/Y") }} a las {{ post.fecha_publicacion|date("H:i") }}
+                        </small>
+                        <br>
+                        {% if post.getFotoPost() %}
+                            <div class="post-photo">
+                                <img src="{{ asset('uploads/foto_post/' ~ post.getFotoPost().getUrlImagen()) }}" alt="Foto del post">
+                            </div>
+                        {% endif %}
+                        <a href="{{ path('ver_post', { id: post.id }) }}">Ver más</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No hay posts disponibles en este momento.</p>
+            {% endif %}
+        </div>
+        <h3>Lista de Usuarios</h3>
+        <ul class="usuarios-list">
+            {% for usuario in usuarios %}
+                <li>{{ usuario.nombre }} {{ usuario.apellido }} - {{ usuario.email }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% include 'usuarios.html.twig' %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    // Funcionalidad de reacciones para todos los usuarios
+    document.querySelectorAll('.btn-reaccion button').forEach(button => {
+        button.addEventListener('click', function() {
+            const postId = this.dataset.postId;
+            const tipo = this.dataset.tipo;
+
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState === 4 && this.status === 200) {
+                    var respuesta = JSON.parse(this.responseText);
+                    document.querySelector(`#likes-${postId}`).textContent = respuesta.likes;
+                    document.querySelector(`#dislikes-${postId}`).textContent = respuesta.dislikes;
+                }
+            };
+            xhttp.open("POST", `/post/${postId}/reaccionar`, true);
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.send(JSON.stringify({ tipo: tipo }));
+        });
+    });
+
+    // Funcionalidad de arrastrar y soltar para eliminar posts (solo para administradores)
+    let postArrastrado;
+
+    document.querySelectorAll('.post').forEach(post => {
+        post.addEventListener('dragstart', function (e) {
+            postArrastrado = this;
+        });
+    });
+
+    let papelera = document.getElementById('papelera');
+    papelera.addEventListener('dragover', function (e) {
+        e.preventDefault();
+    });
+
+    papelera.addEventListener('drop', function (e) {
+        e.preventDefault();
+        let postId = postArrastrado.getAttribute('data-post-id');
+        
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                postArrastrado.remove();
+                alert('Post eliminado exitosamente.');
+            } else if (this.readyState === 4) {
+                alert('No se pudo eliminar el post.');
+            }
+        };
+        xhttp.open("DELETE", `/eliminar-post/${postId}`, true);
+        xhttp.send();
+    });
+});
+</script>
+{% endblock %}
