@@ -25,7 +25,7 @@
                 </small>
             {% if post.getFotoPost %}
                 <!-- Mostrar la imagen del post -->
-<img src="{{ fotoPerfil ? asset('uploads/fotos_perfil/' ~ fotoPerfil) : 'https://via.placeholder.com/150' }}" alt="Foto de perfil" class="profile-avatar">
+                    <img src="{{ asset('uploads/foto_post/' ~ post.getFotoPost().getUrlImagen()) }}" alt="Foto del post" class="post-img">
             {% endif %}
                 <a href="{{ path('ver_post', { id: post.id }) }}">Ver más</a> {# Enlace al detalle del post #}
             </div>

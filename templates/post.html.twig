@@ -18,18 +18,21 @@
                 {% if post.getFotoPost() %}
                     <img src="{{ asset('uploads/foto_post/' ~ post.getFotoPost().getUrlImagen()) }}" alt="Foto del post">
                 {% endif %}
-        <!-- Sección de reacciones -->
-        <div class="reaccion-container">
-            <div class="btn-reaccion">
-                <button onclick="reaccionarPost({{ post.id }}, 'me_gusta')">
-                    👍 <span id="likes-{{ post.id }}">{{ post.contarReacciones('me_gusta') }}</span>
-                </button>
-                <button onclick="reaccionarPost({{ post.id }}, 'no_me_gusta')">
-                    👎 <span id="dislikes-{{ post.id }}">{{ post.contarReacciones('no_me_gusta') }}</span>
-                </button>
+            <!-- Sección de reacciones -->
+            <div class="reaccion-container">
+                <div class="btn-reaccion">
+                    <button id="btn-like-{{ post.id }}" class="{% if app.user and post.tieneReaccion(app.user, 'me_gusta') %}active{% endif %}"
+                        onclick="reaccionarPost({{ post.id }}, 'me_gusta')">
+                        👍 <span id="likes-{{ post.id }}">{{ post.contarReacciones('me_gusta') }}</span>
+                    </button>
+
+                    <button id="btn-dislike-{{ post.id }}" class="{% if app.user and post.tieneReaccion(app.user, 'no_me_gusta') %}active{% endif %}"
+                        onclick="reaccionarPost({{ post.id }}, 'no_me_gusta')">
+                        👎 <span id="dislikes-{{ post.id }}">{{ post.contarReacciones('no_me_gusta') }}</span>
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
     </div>
            
         <!-- Sección de comentarios -->
@@ -60,38 +63,50 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script>
-        function reaccionarPost(postId, tipo) {
-            console.log("Enviando reacción:", tipo);
+<script>
+function reaccionarPost(postId, tipo) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var respuesta = JSON.parse(this.responseText);
+            document.getElementById(`likes-${postId}`).textContent = respuesta.likes;
+            document.getElementById(`dislikes-${postId}`).textContent = respuesta.dislikes;
 
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-                if (this.readyState == 4) {
-                    if (this.status == 200) {
-                        var respuesta = JSON.parse(this.responseText);
-                        document.getElementById(`likes-${postId}`).textContent = respuesta.likes;
-                        document.getElementById(`dislikes-${postId}`).textContent = respuesta.dislikes;
+            var btnLike = document.getElementById(`btn-like-${postId}`);
+            var btnDislike = document.getElementById(`btn-dislike-${postId}`);
 
-                        var mensajeDiv = document.getElementById("mensaje-reaccion");
-                        mensajeDiv.innerHTML = respuesta.message;
-                        mensajeDiv.style.display = "block";
+            // Quitar clase activa de ambos botones
+            btnLike.classList.remove("active");
+            btnDislike.classList.remove("active");
 
-                        setTimeout(function() {
-                            mensajeDiv.style.display = "none";
-                        }, 2000);
-                    } else {
-                        console.error("Error en la reacción:", this.responseText);
-                    }
-                }
-            };
+            var btn = null;
+            if (respuesta.tipo === "me_gusta") {
+                btnLike.classList.add("active");
+                btn = btnLike;
+            } else if (respuesta.tipo === "no_me_gusta") {
+                btnDislike.classList.add("active");
+                btn = btnDislike;
+            }
 
-            xhttp.open("POST", "/post/" + postId + "/reaccionar", true);
-            
-            // Cambiamos de JSON a FormData
-            var formData = new FormData();
-            formData.append("tipo", tipo);
+            // Animar el botón si hay una reacción válida
+            if (btn) {
+                btn.classList.remove("animar-reaccion"); 
+                setTimeout(() => {
+                    btn.classList.add("animar-reaccion");
+                }, 10);
 
-            xhttp.send(formData);
+                setTimeout(() => {
+                    btn.classList.remove("animar-reaccion");
+                }, 500);
+            }
         }
-    </script>
+    };
+
+    xhttp.open("POST", "/post/" + postId + "/reaccionar", true);
+    var formData = new FormData();
+    formData.append("tipo", tipo);
+    xhttp.send(formData);
+}
+
+</script>
 {% endblock %}

@@ -48,6 +48,7 @@
 }
 
 .post-photo img {
+    border-bottom: 20px;
     width: 100%;
     height: auto;
     max-height: 540px; /* Limita el alto */

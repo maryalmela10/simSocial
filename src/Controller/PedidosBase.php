@@ -261,23 +261,25 @@ class PedidosBase extends AbstractController
         }
 
         $usuario = $this->getUser();
-
         // Buscar si el usuario ya reaccionó a este post
-        $reaccion = $entityManager->getRepository(Reaccion::class)->findOneBy([
+        $reaccionRepo = $entityManager->getRepository(Reaccion::class);
+        $reaccion = $reaccionRepo->findOneBy([
             'usuario' => $usuario,
             'post' => $post
         ]);
 
         if ($reaccion) {
             if ($reaccion->getTipo() === $tipo) {
-                // Si la reacción es la misma, eliminarla
-                $entityManager->remove($reaccion);
-                $mensaje = 'Reacción eliminada';
-            } else {
-                // Si la reacción es diferente, actualizarla
-                $reaccion->setTipo($tipo);
-                $mensaje = 'Reacción actualizada';
-            }
+                $entityManager->remove($reaccion); // Si la reacción es la misma, eliminarla
+                $entityManager->flush();
+                return $this->json([
+                    'likes' => $reaccionRepo->count(['post' => $post, 'tipo' => 'me_gusta']),
+                    'dislikes' => $reaccionRepo->count(['post' => $post, 'tipo' => 'no_me_gusta']),
+                    'tipo' => null // Se eliminó la reacción
+                ]);
+            } 
+            
+            $reaccion->setTipo($tipo); // Si la reacción es diferente, actualizarla
         } else {
             // Crear una nueva reacción
             $reaccion = new Reaccion();
@@ -285,20 +287,15 @@ class PedidosBase extends AbstractController
             $reaccion->setPost($post);
             $reaccion->setTipo($tipo);
             $entityManager->persist($reaccion);
-            $mensaje = 'Reacción añadida';
         }
-
+    
         $entityManager->flush();
-
-        // Contar las reacciones después de actualizar
-        $likes = $entityManager->getRepository(Reaccion::class)->count(['post' => $post, 'tipo' => 'me_gusta']);
-        $dislikes = $entityManager->getRepository(Reaccion::class)->count(['post' => $post, 'tipo' => 'no_me_gusta']);
-
-        return new Response(json_encode([
-            'message' => $mensaje,
-            'likes' => $likes,
-            'dislikes' => $dislikes
-        ]), 200, ['Content-Type' => 'application/json']);
+    
+        return $this->json([
+            'likes' => $reaccionRepo->count(['post' => $post, 'tipo' => 'me_gusta']),
+            'dislikes' => $reaccionRepo->count(['post' => $post, 'tipo' => 'no_me_gusta']),
+            'tipo' => $reaccion->getTipo()
+        ]);
     }
     
 	// #[Route('/productos/{id}', name:'productos')]

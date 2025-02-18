@@ -117,6 +117,11 @@ form button:hover {
     background-color: #66c4e7;
 }
 
+.animar-reaccion {
+    transform: scale(1.2);
+    transition: transform 0.2s ease-in-out;
+}
+
 .btn-reaccion {
     display: flex;
     justify-content: center;
@@ -126,7 +131,6 @@ form button:hover {
 }
 
 .btn-reaccion button {
-    color: black;
     text-decoration: none;
     transition: all 0.3s ease;
     border-radius: 5px;
@@ -136,16 +140,33 @@ form button:hover {
     font-weight: bold;
     cursor: pointer;
     font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
+/* Cuando el usuario pasa el mouse */
 .btn-reaccion button:hover {
     background: linear-gradient(90deg, #dea1ff 0%, #99e7ff 100%);
     color: white;
     transform: scale(1.05);
 }
 
+/* ESTILOS NUEVOS PARA REACCIONES ACTIVAS */
+.btn-reaccion button.active {
+    background: #ffac4c;
+    color: white;
+    transform: scale(1.1);
+}
+
+/* Agregar animación cuando se reacciona */
+.btn-reaccion button.animar-reaccion {
+    animation: zoom-icon 0.3s ease-in-out;
+}
+
+/* Animación de clic */
 @keyframes zoom-icon {
-    0% { transform: scale(1); }
+    0% { transform: scale(1.1); }
     50% { transform: scale(1.5); }
-    100% { transform: scale(1); }
+    100% { transform: scale(1.1); }
 }

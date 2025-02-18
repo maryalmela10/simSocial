@@ -124,5 +124,19 @@ class Post
         }
         return $this;
     }
+
+    public function tieneReaccion(?Usuario $usuario, string $tipo): bool
+    {
+        if (!$usuario) {
+            return false; // Si no hay usuario logueado, no puede haber reacción
+        }
+    
+        foreach ($this->reacciones as $reaccion) {
+            if ($reaccion->getUsuario() === $usuario && $reaccion->getTipo() === $tipo) {
+                return true;
+            }
+        }
+        return false;
+    }
     
 }
