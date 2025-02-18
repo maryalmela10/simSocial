@@ -26,11 +26,39 @@
                 <button type="submit">Eliminar Foto</button>
             </form>
         {% endif %}
+        <!-- Botón para editar el perfil -->
+        <button id="editarPerfilBtn">Editar Perfil</button>
     {% endif %}    
         <h3>{{ app.user.nombre|capitalize }} {{ app.user.apellido|capitalize }}</h3>
-        <p>Email: {{ app.user.email }}</p>
-        <p>Registrado: {{ app.user.fecha_registro|date("d/m/Y") }}</p>
-    </div>
+        <!-- Tabla de información del perfil -->
+        <table>
+            <tr>
+                <td>
+                    <p>Email: {{ app.user.email }}</p>
+                    <p>Registrado: {{ app.user.fecha_registro|date("d/m/Y") }}</p>
+                    <p>Fecha de Nacimiento: {{ fecha_nacimiento|date('d/m/Y') }}</p>
+                </td>
+                <td>
+                    <p><strong>Biografía:</strong> {{ biografia }}</p>
+                    <p><strong>Localidad:</strong> {{ localidad }}</p>
+                </td>
+            </tr>
+        </table>
+    <!--Formulario de editar informacion personal-->
+    <form id="formularioEditarPerfil" method="POST" action="{{ path('miPerfil', {'id_usuario': usuario.id}) }}" style="display: none;">
+        <input type="hidden" name="editar_perfil" value="1"> {# Identificador del formulario #}
+
+        <label>Localidad:</label>
+        <input type="text" name="localidad" value="{{ usuario.localidad }}">
+
+        <label>Fecha de nacimiento:</label>
+        <input type="date" name="fecha_nacimiento" value="{{ usuario.fechaNacimiento|date('Y-m-d') }}">
+
+        <label>Biografía:</label>
+        <textarea name="biografia">{{ usuario.biografia }}</textarea>
+
+        <button type="submit">Guardar cambios</button>
+    </form>
     
     {% if app.user.id == usuario.id %} 
         <!-- Formulario para crear nuevo post (solo visible en el perfil propio) -->
@@ -94,6 +122,16 @@ document.addEventListener('DOMContentLoaded', function() {
     formulario.addEventListener('submit', limpiarBorrador);
     const elementoContenido = document.getElementById('contenido-post');
     elementoContenido.addEventListener('input', guardarBorrador);
+});
+
+// Función para mostrar el formulario de edición del perfil
+document.getElementById('editarPerfilBtn').addEventListener('click', function() {
+    var formularioEditar = document.getElementById('formularioEditarPerfil');
+    if (formularioEditar.style.display === 'none') {
+        formularioEditar.style.display = 'block';
+    } else {
+        formularioEditar.style.display = 'none';
+    }
 });
 </script>
 {% endblock %}

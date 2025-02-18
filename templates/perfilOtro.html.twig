@@ -9,12 +9,36 @@
 {% if amistad and amistad.estado == 'aceptado' %}
     <div class="profile-info">
     <h3>Perfil de {{ usuario.nombre|capitalize }} {{ usuario.apellido|capitalize }}</h3>
+    <div class="eliminar-amigo">
+        <button class="btn-eliminar-amigo" onclick="abrirModal()">Eliminar amigo</button>
+    </div>
     <!-- Mostrar la foto de perfil -->
     <img src="{{ asset(fotoPerfil ? asset('uploads/fotos_perfil/' ~ fotoPerfil) :asset('')) }}" alt="Foto de perfil" class="profile-avatar">
     </div>
-            <div class="eliminar-amigo">
-                <button class="btn-eliminar-amigo" onclick="abrirModal()">Eliminar amigo</button>
-            </div>
+    <div class="profile-details">
+        <table>
+            <tr>
+                <td><strong>Email:</strong></td>
+                <td>{{ usuario.email }}</td>
+            </tr>
+            <tr>
+                <td><strong>Registrado:</strong></td>
+                <td>{{ usuario.fecha_registro|date('d/m/Y') }}</td>
+            </tr>
+            <tr>
+                <td><strong>Fecha de Nacimiento:</strong></td>
+                <td>{{ usuario.fechaNacimiento|date('d/m/Y') }}</td>
+            </tr>
+            <tr>
+                <td><strong>Biografía:</strong></td>
+                <td>{{ usuario.biografia }}</td>
+            </tr>
+            <tr>
+                <td><strong>Localidad:</strong></td>
+                <td>{{ usuario.localidad }}</td>
+            </tr>
+        </table>
+    </div>
 
     <div class="posts-list">
         {% for post in posts %}

@@ -11,7 +11,6 @@ use App\Entity\Post;
 use App\Entity\Comentario;
 use App\Entity\Reaccion;
 use App\Entity\Amistad;
-use App\Entity\PedidoProducto;
 use App\Entity\FotosPerfil;
 use App\Entity\FotoPost;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -89,6 +88,8 @@ class PedidosBase extends AbstractController
                     $fotoPost->setUrlImagen($fotoNombre);
                     $fotoPost->setPost($post); // Relacionar la foto con el post
     
+                    // Relacionar la foto con el post
+                    $fotoPost->setPost($post);     
                     // Persistir la entidad FotoPostfotos
                     $entityManager->persist($fotoPost);
                 }
@@ -135,11 +136,33 @@ class PedidosBase extends AbstractController
                 return $this->redirectToRoute('miPerfil', ['id_usuario' => $id_usuario]);
             }
         
+        // Procesar formulario de edición del perfil
+        if ($request->isMethod('POST') && $request->request->has('editar_perfil')) {
+            $localidad = $request->request->get('localidad');
+            $fechaNacimiento = $request->request->get('fecha_nacimiento');
+            $biografia = $request->request->get('biografia');
+
+            // Actualizar los datos del usuario
+            $usuario->setLocalidad($localidad);
+            $usuario->setFechaNacimiento(new \DateTime($fechaNacimiento));
+            $usuario->setBiografia($biografia);
+
+            $entityManager->persist($usuario);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Perfil actualizado correctamente.');
+            return $this->redirectToRoute('miPerfil', ['id_usuario' => $id_usuario]);
+        }   
+                
         // Luego, pasas los datos a la plantilla
         return $this->render("perfil.html.twig", [
             'posts' => $posts,
             'usuario' => $usuario,
             'fotoPerfil' => $fotoPerfil 
+            'fotoPerfil' => $fotoPerfil,
+            'fecha_nacimiento' => $usuario->getFechaNacimiento(),
+            'biografia' => $usuario->getBiografia(),
+            'localidad' => $usuario->getLocalidad(), 
         ]);
     }
 

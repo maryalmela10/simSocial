@@ -120,7 +120,7 @@ public function inicio(): Response
         }
 
          $posts = $usuario->getPosts();
-         $fotoPerfil = $usuario->getFotoPerfil() ? '/uploads/fotos_perfil/' . $usuario->getFotoPerfil()->getUrlImagen() : null;
+         $fotoPerfil = $usuario->getFotoPerfil() ? $usuario->getFotoPerfil()->getUrlImagen() : null;
  
          return $this->render("perfilOtro.html.twig", [
              'amistad' => $amistad,
