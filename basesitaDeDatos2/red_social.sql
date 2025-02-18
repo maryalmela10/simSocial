@@ -112,3 +112,7 @@ INSERT INTO comentarios (contenido, post_id, usuario_id) VALUES ('Interesante pe
 -- Insertar reacciones
 INSERT INTO reacciones (usuario_id, post_id, tipo) VALUES (1, 2, 'me_gusta');
 INSERT INTO reacciones (usuario_id, post_id, tipo) VALUES (3, 1, 'me_gusta');
+
+-- Insertar una amistad entre el usuario 1 (pablo) y el usuario 2 (mary)
+INSERT INTO amistades (usuario_a_id, usuario_b_id, estado)
+VALUES (1, 2, 'aceptado');
